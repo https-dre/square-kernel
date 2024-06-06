@@ -2,7 +2,7 @@ ASM = nasm
 CC = gcc
 SRC_DIR = src
 ASM_DIR = $(SRC_DIR)/asm
-BUILD_DIR = target
+BUILD_DIR = build
 BOOTSTRAP_FILE = $(ASM_DIR)/bootstrap.asm
 INIT_KERNEL_FILES = $(ASM_DIR)/starter.asm
 KERNEL_FILES = $(SRC_DIR)/main.c
@@ -11,7 +11,7 @@ KERNEL_OBJECT = $(BUILD_DIR)/kernel.o
 OUTFILE = square-kernel.iso
 LINKER = linker.ld
 
-build: $(BOOTSTRAP_FILE) $(KERNEL_FILES)
+build_and_run: $(BOOTSTRAP_FILE) $(KERNEL_FILES)
 	$(ASM) -f bin $(BOOTSTRAP_FILE) -o $(BUILD_DIR)/bootstrap.o
 	$(ASM) -f elf32 $(INIT_KERNEL_FILES) -o $(BUILD_DIR)/starter.o
 	$(CC) $(KERNEL_FLAGS) $(KERNEL_FILES) -o $(KERNEL_OBJECT)
