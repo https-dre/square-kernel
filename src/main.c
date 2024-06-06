@@ -1,3 +1,6 @@
+extern void enable_interrupts(void);
+extern void disable_interrupts(void);
+
 volatile unsigned char *video = 0xb8000;
 
 #define BUFFER_WIDTH 80
@@ -23,10 +26,11 @@ Writer vgaWriter = {
 void print(char *);
 void new_line();
 void printi( int );
+void clear_row();
 
 void kernel_main() {
     print("Welcome to square-kernel!\n");
-    print("We are now in protected mode");
+    print("We are in protected mode!\n");
 
     while( 1 );
 }
@@ -39,12 +43,27 @@ void print(char *str) {
             str++;
             continue;
         }
+
+        if(vgaWriter.row > BUFFER_HEIGHT || vgaWriter.column == BUFFER_WIDTH*2) {
+            disable_interrupts();
+            clear_row();
+            enable_interrupts();
+        }
         
         vga->buffer[vgaWriter.row][vgaWriter.column] = c;
         vga->buffer[vgaWriter.row][vgaWriter.column+1] = vgaWriter.color_code;
         vgaWriter.column += 2;
 
         str++;
+    }
+}
+
+void clear_row() {
+    for(int row = 0; row < BUFFER_HEIGHT; row++) {
+        for(int col = 0; col < BUFFER_WIDTH; col++) {
+            char *character = vga->buffer[row][col];
+            vga->buffer[row - 1][col] = *character;
+        }
     }
 }
 
@@ -70,6 +89,7 @@ void printi(int number) {
 }
 
 void interrupt_handler(int interrupt_number) {
-    print("\nInterrupt Received ");
-    printi(interrupt_number);
+    /* if(interrupt_number == 32) {
+        print(".");
+    } */
 }

@@ -95,6 +95,16 @@ set_pit_frequency:
 
     ret                    ; Retorna da função
 bits 32
+
+enable_interrupts:
+    sti
+    ret
+disable_interrupts:
+    cli
+    ret
+
+global enable_interrupts
+global disable_interrupts
 start_kernel:
     mov eax, 10h
     mov ds, eax ; data segment
