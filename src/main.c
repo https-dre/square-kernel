@@ -8,11 +8,9 @@ void println();
 void printi( int );
 
 void kernel_main() {
-    print( "Welcome to 539kernel!" );
+    print("Welcome to square-kernel!" );
     println();
-    print( "We are now in Protected-mode" );
-    println();
-    printi( 539 );
+    print("We are now in Protected-mode" );
     println();
 
     while( 1 );
@@ -52,4 +50,10 @@ void printi(int number) {
         printi(number);
         printi(remaining);
     }
+}
+
+void interrupt_handler(int interrupt_number) {
+    println();
+    print("Interrupt Received ");
+    printi(interrupt_number);
 }
