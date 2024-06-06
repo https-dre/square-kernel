@@ -243,12 +243,12 @@ isr_48:
 	push 48
 	jmp irq_basic
 isr_basic:
-    call interrupt_handler
-    pop eax
-
+	call interrupt_handler
+	pop eax
+    
     sti
-    iret
-
+	iret
+	
 irq_basic:
     call interrupt_handler
 
@@ -266,7 +266,7 @@ irq_basic:
         pop eax
         sti
         iret
-
+		
 idt:
 	dw isr_0, 8, 0x8e00, 0x0000
 	dw isr_1, 8, 0x8e00, 0x0000
@@ -318,5 +318,5 @@ idt:
 	dw isr_47, 8, 0x8e00, 0x0000
 	dw isr_48, 8, 0x8e00, 0x0000
 idtr:
-    idt_size_in_bytes : dw idtr - idt
-    idt_base_address  : dw idt
+	idt_size_in_bytes	: 	dw idtr - idt
+	idt_base_address	: 	dd idt

@@ -105,7 +105,7 @@ start_kernel:
     mov fs, eax
     mov gs, eax
 
-    cli
+    sti
     call kernel_main
 
 %include "src/asm/gdt.asm"
