@@ -6,17 +6,23 @@ BUILD_DIR = build
 BOOTSTRAP_FILE = $(ASM_DIR)/bootstrap.asm
 INIT_KERNEL_FILES = $(ASM_DIR)/starter.asm
 KERNEL_FILES = $(SRC_DIR)/main.c
-KERNEL_FLAGS = -Wall -m32 -c -ffreestanding -fno-asynchronous-unwind-tables -fno-pie -Wint-conversion
+INCLUDE_DIR = $(SRC_DIR)/vga $(SRC_DIR)/process $(SRC_DIR)/sch $(SRC_DIR)
+KERNEL_FLAGS = -Wall -m32 -c -ffreestanding -fno-asynchronous-unwind-tables -fno-pie -Wint-conversion $(addprefix -I, $(INCLUDE_DIR))
 KERNEL_OBJECT = $(BUILD_DIR)/kernel.o
 OUTFILE = square-kernel.iso
 LINKER = linker.ld
+
+LINKER_FILES = $(BUILD_DIR)/starter.o $(KERNEL_OBJECT) $(BUILD_DIR)/vga_buffer.elf $(BUILD_DIR)/process.elf $(BUILD_DIR)/scheduler.elf
 
 build_and_run: $(BOOTSTRAP_FILE) $(KERNEL_FILES)
 	$(ASM) -f bin $(BOOTSTRAP_FILE) -o $(BUILD_DIR)/bootstrap.o
 	$(ASM) -f elf32 $(INIT_KERNEL_FILES) -o $(BUILD_DIR)/starter.o
 	$(CC) $(KERNEL_FLAGS) $(KERNEL_FILES) -o $(KERNEL_OBJECT)
+	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/vga/vga_buffer.c -o $(BUILD_DIR)/vga_buffer.elf
+	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/process/process.c -o $(BUILD_DIR)/process.elf
+	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/sch/scheduler.c -o $(BUILD_DIR)/scheduler.elf
 
-	ld -melf_i386 -T$(LINKER) $(BUILD_DIR)/starter.o $(KERNEL_OBJECT) -o $(BUILD_DIR)/square-kernel.elf
+	ld -melf_i386 -T$(LINKER) $(LINKER_FILES) -o $(BUILD_DIR)/square-kernel.elf 
 	objcopy -O binary $(BUILD_DIR)/square-kernel.elf $(BUILD_DIR)/square-kernel.bin
 
 	dd if=$(BUILD_DIR)/bootstrap.o of=$(OUTFILE)

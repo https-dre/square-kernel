@@ -159,9 +159,31 @@ isr_31:
 	jmp isr_basic
 	
 isr_32:
-	cli
-	push 32
-	jmp irq_basic
+	; Part 1
+    
+    cli ; Step 1
+    
+    pusha ; Step 2
+    
+    ; Step 3
+    mov eax, [esp + 32]
+    push eax  
+    
+    call scheduler ; Step 4
+    
+    ; ... ;
+    
+    ; Part 2
+    
+    ; Step 5
+    mov al, 0x20
+    out 0x20, al
+    
+    ; Step 6
+    add esp, 40d
+    push run_next_process
+    
+    iret ; Step 7
 	
 isr_33:
 	cli

@@ -1,6 +1,9 @@
 extern kernel_main
 extern interrupt_handler
 
+extern scheduler
+extern run_next_process
+
 bits 16
 start:
     mov ax, cs
@@ -10,12 +13,14 @@ start:
     call init_video_mode
     call enter_protected_mode
     call setup_interrupts
+    call load_task_register
 
     call 08h:start_kernel
 
 setup_interrupts:
     call remap_pic
     call load_idt
+    
     ret
 load_idt:
     lidt [idtr - start]
@@ -94,17 +99,13 @@ set_pit_frequency:
     out 0x40, al           ; Envia o high byte para a porta de dados do canal 0 (0x40)
 
     ret                    ; Retorna da função
+
+load_task_register:
+    mov ax, 40d
+    ltr ax
+
+    ret
 bits 32
-
-enable_interrupts:
-    sti
-    ret
-disable_interrupts:
-    cli
-    ret
-
-global enable_interrupts
-global disable_interrupts
 start_kernel:
     mov eax, 10h
     mov ds, eax ; data segment
@@ -120,3 +121,23 @@ start_kernel:
 
 %include "src/asm/gdt.asm"
 %include "src/asm/idt.asm"
+
+tss:
+    dd 0       ; Segmento de ligação de backlink (reservado no x86)
+    dd 0       ; Reservado
+    dd 0       ; Segmento de pilha de kernel
+    dd 0       ; Reservado
+    dd 0       ; Reservado
+    dd 0       ; Reservado
+    dd 0       ; Reservado
+    dd 0       ; Reservado
+    dd 0       ; Reservado
+    dd 0       ; Reservado
+    dd 0       ; Reservado
+    dd 0       ; Reservado
+    dd 0       ; Reservado
+    dd 0       ; Reservado
+    dd 0       ; Reservado
+    dd 0       ; Reservado
+    dd 0       ; Reservado
+    dd 0       ; Reservado
