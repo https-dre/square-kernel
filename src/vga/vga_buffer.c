@@ -19,19 +19,17 @@ void print(char *str) {
             continue;
         }
 
-        if(vgaWriter.row > BUFFER_HEIGHT) {
+        if(vgaWriter.row == BUFFER_HEIGHT) {
             clear_row();
         }
 
         if(vgaWriter.column == BUFFER_WIDTH) {
-            vgaWriter.column = 0;
-            vgaWriter.row++;
+            new_line();
         }
         
-        vga->buffer[vgaWriter.row][vgaWriter.column] = c;
+        vga->buffer[vgaWriter.row][vgaWriter.column] = c; 
         vga->buffer[vgaWriter.row][vgaWriter.column+1] = vgaWriter.color_code;
         vgaWriter.column += 2;
-
         str++;
     }
 }
@@ -66,6 +64,10 @@ void printi(int number) {
     }
 }
 
-void set_vga_color_code(int color_code) {
-    vgaWriter.color_code = color_code;
+void set_vga_color_code(int color) {
+    vgaWriter.color_code = color;
+}
+
+int new_color_code(int background, int color) {
+    return ((background << 4) | color);
 }

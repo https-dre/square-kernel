@@ -1,8 +1,24 @@
-#ifndef VGA_BUFFER_H
-#define VGA_BUFFER_H
-
 #define BUFFER_WIDTH 160
 #define BUFFER_HEIGHT 25
+
+enum Color {
+    Black = 0,
+    Blue = 1,
+    Green = 2,
+    Cyan = 3,
+    Red = 4,
+    Magenta = 5,
+    Brown = 6,
+    LightGray = 7,
+    DarkGray = 8,
+    LightBlue = 9,
+    LightGreen = 10,
+    LightCyan = 11,
+    LightRed = 12,
+    Pink = 13,
+    Yellow = 14,
+    White = 15,
+};
 
 typedef struct {
     volatile unsigned char buffer[BUFFER_HEIGHT][BUFFER_WIDTH];
@@ -23,5 +39,4 @@ void new_line();
 void printi(int);
 void clear_row();
 void set_vga_color_code(int);
-
-#endif // VGA_BUFFER_H
+int new_color_code(int, int);
