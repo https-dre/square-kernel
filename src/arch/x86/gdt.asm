@@ -8,4 +8,4 @@ gdt:
 
 gdtr:
     gdt_size_in_bytes   :   dw ( 6 * 8 )
-    gdt_base_address    :   dd gdt 
+    gdt_base_address    :   dd gdt
