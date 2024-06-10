@@ -8,10 +8,9 @@ INIT_KERNEL_FILES = $(ASM_DIR)/init/starter.asm
 KERNEL_FILES = $(SRC_DIR)/kernel/main.c
 INCLUDE_DIR = $(SRC_DIR)/include
 KERNEL_FLAGS = -Wall -m32 -c -ffreestanding -fno-asynchronous-unwind-tables -fno-pie -Wint-conversion $(addprefix -I, $(INCLUDE_DIR))
-KERNEL_OBJECT = $(BUILD_DIR)/kernel.o
+KERNEL_OBJECT = $(BUILD_DIR)/kernel.elf
 OUTFILE = square-kernel.iso
 LINKER = linker.ld
-
 LINKER_FILES = $(BUILD_DIR)/starter.o $(KERNEL_OBJECT) $(BUILD_DIR)/vga_buffer.elf $(BUILD_DIR)/process.elf $(BUILD_DIR)/scheduler.elf $(BUILD_DIR)/heap.elf $(BUILD_DIR)/paging.elf
 
 build_: $(BOOTSTRAP_FILE) $(KERNEL_FILES)
