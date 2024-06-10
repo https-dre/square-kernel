@@ -1,11 +1,11 @@
 ASM = nasm
 CC = gcc
-SRC_DIR = src
+SRC_DIR = .
 ASM_DIR = $(SRC_DIR)/arch/x86
 BUILD_DIR = build
 BOOTSTRAP_FILE = $(ASM_DIR)/init/bootstrap.asm
 INIT_KERNEL_FILES = $(ASM_DIR)/init/starter.asm
-KERNEL_FILES = $(SRC_DIR)/main.c
+KERNEL_FILES = $(SRC_DIR)/kernel/main.c
 INCLUDE_DIR = $(SRC_DIR)/include
 KERNEL_FLAGS = -Wall -m32 -c -ffreestanding -fno-asynchronous-unwind-tables -fno-pie -Wint-conversion $(addprefix -I, $(INCLUDE_DIR))
 KERNEL_OBJECT = $(BUILD_DIR)/kernel.o

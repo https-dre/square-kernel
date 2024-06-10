@@ -119,8 +119,8 @@ start_kernel:
     sti
     call kernel_main
 
-%include "src/arch/x86/gdt.asm"
-%include "src/arch/x86/idt.asm"
+%include "arch/x86/gdt.asm"
+%include "arch/x86/idt.asm"
 
 tss:
     dd 0       ; Segmento de ligação de backlink (reservado no x86)
