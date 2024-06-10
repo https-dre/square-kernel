@@ -52,3 +52,7 @@ Para rodar o projeto é necessário baixar em um emulador compatível com x86, n
 ### Rode o Makefile
 
 	make
+
+## Licença
+
+Este projeto está licenciado sob a Licença Pública Geral GNU v3.0 - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
