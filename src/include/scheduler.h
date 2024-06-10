@@ -1,4 +1,4 @@
-#include "../process/process.h"
+#include "process.h"
 
 extern int next_sch_pid, curr_sch_pid;
 
