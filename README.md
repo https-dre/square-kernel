@@ -1,27 +1,54 @@
+
 # square-kernel
 
 Um kernel simples e open-source para aprendizado e hobby.
 
-Implementações
+# Implementações
 
-- bootloader [x]
-- protected-mode [x]
-- suporte a vga [x]
-- gerenciador de processos (15 processos) [x]
-- alocador de memória dinâmica
-- gerenciador de processos avançado
-- suporte a outros hardwares (teclado e etc)
-- sistema de arquivos
+- Protected-Mode *32 bits*  *(implemented)*
 
-## Como rodar o kernel?
+- Vga-Buffer *(implemented)*
 
-Para rodar o kernel em um emulador é necessário baixar o código fonte e compilar uma versão para rodar com o qemu.
-Use o script "install" para realizar a instalação dos compiladores e do emulador.
-Rode o comando make para realizar build e rodar o kernel.
+- Basic *PM* - Process Manager *(implemented)*
 
-    git clone https://github.com/https-dre/square-kernel/tree/main
-    cd square-kernel
-    mkdir build
-    chmod +x install
-    ./install
-    make build_and_run
+- Basic *MM* - Memory Manager *(in progress)*
+
+- Advanced *PM*
+
+- Hardware Suport (Teclado e etc)
+
+- Basic *FS* - File System
+
+  
+
+## Compilação e Emulação
+
+**Não é recomendado tentar dar boot em uma máquina real, o projeto ainda segue incompleto e não há certeza que a segurança é 100% é garantida**
+
+### Dependências de Compilação e Linkagem
+
+ - nasm - *compilador assembly x86*
+ - gcc - *compilador C*
+ - ld - *linker*
+
+
+### Baixe um emulador
+
+Para rodar o projeto é necessário baixar em um emulador compatível com x86, no caso do projeto eu uso o QEMU
+
+### Baixe o projeto do github:
+
+	git clone https://github.com/https-dre/square-kernel/tree/main
+	cd square-kernel
+
+### Crie um diretório para arquivos de construção
+	mkdir build
+
+*Use o script "install" para realizar a instalação em distribuições linux baseadas em Debian*
+
+	chmod +x install
+	./install
+
+### Rode o Makefile
+
+	make
