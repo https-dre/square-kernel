@@ -34,6 +34,11 @@ void print(char *str) {
     }
 }
 
+void println(char *str) {
+    print(str);
+    print("\n");
+}
+
 void clear_row() {
     for(int row = 0; row < BUFFER_HEIGHT; row++) {
         for(int col = 0; col < BUFFER_WIDTH; col++) {
