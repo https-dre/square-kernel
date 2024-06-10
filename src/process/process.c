@@ -1,4 +1,5 @@
 #include "process.h"
+#include "heap.h"
 
 int processes_count, curr_pid;
 process_t *processes[15];
