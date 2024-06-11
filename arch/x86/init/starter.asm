@@ -1,8 +1,12 @@
+bits 16
 extern kernel_main
 extern interrupt_handler
-
 extern scheduler
 extern run_next_process
+extern page_directory
+
+global load_page_directory
+global enable_paging
 
 bits 16
 start:
@@ -118,6 +122,19 @@ start_kernel:
 
     sti
     call kernel_main
+
+load_page_directory:
+    mov eax, [page_directory]
+    mov cr3, eax
+
+    ret
+
+enable_paging:
+    mov eax, cr0
+    or eax, 80000000h
+    mov cr0, eax
+
+    ret
 
 %include "arch/x86/gdt.asm"
 %include "arch/x86/idt.asm"
