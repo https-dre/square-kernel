@@ -11,7 +11,7 @@ void process_init()
 }
 
 void process_create(int *base_address) {
-    process_t *process = kalloc(sizeof(process_t));
+    process_t *process = (process_t *)kalloc(sizeof(process_t));
     process->pid = curr_pid++;
     
     process->context.eax = 0;
@@ -22,7 +22,7 @@ void process_create(int *base_address) {
     process->context.ebp = 0;
     process->context.esi = 0;
     process->context.edi = 0;
-    process->context.eip = base_address;
+    process->context.eip = (int)base_address;
     
     process->state = READY;
     process->base_address = base_address;
