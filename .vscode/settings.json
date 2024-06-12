@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "vga_buffer.h": "c"
+        "vga_buffer.h": "c",
+        "process.h": "c"
     }
 }
