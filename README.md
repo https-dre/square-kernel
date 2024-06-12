@@ -3,6 +3,8 @@
 
 Um kernel simples e open-source para aprendizado e hobby.
 
+<img src="docs/print.png">
+
 # Implementações
 
 - Protected-Mode *32 bits*  *(implemented)*
