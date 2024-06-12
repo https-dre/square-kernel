@@ -27,8 +27,8 @@ build_: $(BOOTSTRAP_FILE) $(KERNEL_FILES)
 	objcopy -O binary $(BUILD_DIR)/square-kernel.elf $(BUILD_DIR)/square-kernel.bin
 
 	dd if=$(BUILD_DIR)/bootstrap.o of=$(OUTFILE)
-	dd seek=1 conv=sync if=$(BUILD_DIR)/square-kernel.bin of=$(OUTFILE) bs=512 count=5
-	dd seek=6 conv=sync if=/dev/zero of=$(OUTFILE) bs=512 count=2046
+	dd seek=1 conv=sync if=$(BUILD_DIR)/square-kernel.bin of=$(OUTFILE) bs=512 count=8
+	dd seek=9 conv=sync if=/dev/zero of=$(OUTFILE) bs=512 count=2046
 
 run: $(OUTFILE)
 	qemu-system-x86_64 -s -drive format=raw,file=$(OUTFILE)
