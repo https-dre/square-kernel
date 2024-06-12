@@ -13,7 +13,7 @@ Um kernel simples e open-source para aprendizado e hobby.
 
 - Basic *PM* - Process Manager *(implemented)*
 
-- Basic *MM* - Memory Manager *(in progress)*
+- Basic *MM* - Memory Manager *(implemented)*
 
 - Advanced *PM*
 
