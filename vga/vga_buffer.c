@@ -1,4 +1,5 @@
 #include "vga_buffer.h"
+#include "colors.h"
 
 volatile VgaBuffer *vga; // Define vga
 Writer vgaWriter; // Define vgaWriter
@@ -75,4 +76,8 @@ void set_vga_color_code(int color) {
 
 int new_color_code(int background, int color) {
     return ((background << 4) | color);
+}
+
+void setDefaultColor() {
+    set_vga_color_code(new_color_code(Black, White));
 }

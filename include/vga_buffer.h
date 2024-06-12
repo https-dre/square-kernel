@@ -22,3 +22,4 @@ void clear_row();
 void set_vga_color_code(int);
 int new_color_code(int, int);
 void println(char *);
+void setDefaultColor();
