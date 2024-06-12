@@ -8,7 +8,6 @@ extern page_directory
 global load_page_directory
 global enable_paging
 
-bits 16
 start:
     mov ax, cs
     mov ds, ax
@@ -26,9 +25,6 @@ setup_interrupts:
     call load_idt
     
     ret
-load_idt:
-    lidt [idtr - start]
-    ret
 
 load_gdt:
     cli
@@ -36,7 +32,8 @@ load_gdt:
 
     ret
 
-; Entrando no modo protegido 
+; Entrando no modo protegido start:
+
 enter_protected_mode:
     mov eax, cr0
     or eax, 1
@@ -84,7 +81,7 @@ remap_pic:
     out 0xA1, al
 
     ret
-
+    
 set_pit_frequency:
     ; Parâmetro: frequência desejada (em Hz) é passado em eax
     mov ecx, 1193182       ; Frequência base do PIT
@@ -102,27 +99,19 @@ set_pit_frequency:
     mov al, ah             ; High byte do divisor
     out 0x40, al           ; Envia o high byte para a porta de dados do canal 0 (0x40)
 
-    ret                    ; Retorna da função
+    ret
+
+load_idt:
+    lidt [idtr - start]
+    ret
 
 load_task_register:
     mov ax, 40d
     ltr ax
 
     ret
+
 bits 32
-start_kernel:
-    mov eax, 10h
-    mov ds, eax ; data segment
-    mov ss, eax ; stack segment
-
-    mov eax, 0h
-    mov es, eax
-    mov fs, eax
-    mov gs, eax
-
-    sti
-    call kernel_main
-
 load_page_directory:
     mov eax, [page_directory]
     mov cr3, eax
@@ -136,25 +125,21 @@ enable_paging:
 
     ret
 
+start_kernel:
+    mov eax, 10h
+    mov ds, eax ; data segment
+    mov ss, eax ; stack segment
+
+    mov eax, 0h
+    mov es, eax
+    mov fs, eax
+    mov gs, eax
+
+    sti
+    call kernel_main
+
 %include "arch/x86/gdt.asm"
 %include "arch/x86/idt.asm"
 
 tss:
-    dd 0       ; Segmento de ligação de backlink (reservado no x86)
-    dd 0       ; Reservado
-    dd 0       ; Segmento de pilha de kernel
-    dd 0       ; Reservado
-    dd 0       ; Reservado
-    dd 0       ; Reservado
-    dd 0       ; Reservado
-    dd 0       ; Reservado
-    dd 0       ; Reservado
-    dd 0       ; Reservado
-    dd 0       ; Reservado
-    dd 0       ; Reservado
-    dd 0       ; Reservado
-    dd 0       ; Reservado
-    dd 0       ; Reservado
-    dd 0       ; Reservado
-    dd 0       ; Reservado
-    dd 0       ; Reservado
+    dd 0
