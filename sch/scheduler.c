@@ -1,4 +1,5 @@
 #include "scheduler.h"
+#include "vga_buffer.h"
 
 int next_sch_pid, curr_sch_pid;
 process_t *next_process;
@@ -44,6 +45,7 @@ void scheduler( int eip, int edi, int esi, int ebp, int esp, int ebx, int edx, i
     }
     
     curr_process->state = READY;
+    printi(eax);
 
     // ...
 
