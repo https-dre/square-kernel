@@ -7,7 +7,7 @@ BOOTSTRAP_FILE = $(ASM_DIR)/init/bootstrap.asm
 INIT_KERNEL_FILES = $(ASM_DIR)/init/starter.asm
 KERNEL_FILES = $(SRC_DIR)/kernel/main.c
 INCLUDE_DIR = $(SRC_DIR)/include
-KERNEL_FLAGS = -Wall -m32 -c -ffreestanding -fno-asynchronous-unwind-tables -fno-pie -Wint-conversion $(addprefix -I, $(INCLUDE_DIR))
+KERNEL_FLAGS = -Wno-error=incompatible-pointer-types  -Wno-error=int-conversion -fno-stack-protector -m32 -c -ffreestanding -fno-asynchronous-unwind-tables -fno-pie -Wint-conversion $(addprefix -I, $(INCLUDE_DIR))
 KERNEL_OBJECT = $(BUILD_DIR)/kernel.elf
 OUTFILE = square-kernel.iso
 LINKER = linker.ld
