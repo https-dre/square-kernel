@@ -68,7 +68,7 @@ init_video_mode:
 
 remap_pic:
     mov al, 0x11        ; Início da inicialização do PIC mestre
-    out 0x20, 
+    out 0x20, al
     mov al, 0x11        ; Início da inicialização do PIC escravo
     out 0xA0, al
 
@@ -185,7 +185,7 @@ dev_write_word:
 dev_read:
   push edx
   
-  xor edx,
+  xor edx, edx
   xor eax, eax
 
   mov dx, [esp + 8]
