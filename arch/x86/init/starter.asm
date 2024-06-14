@@ -8,6 +8,10 @@ extern page_directory
 global load_page_directory
 global enable_paging
 
+global dev_read
+global dev_write
+global dev_write_word
+
 start:
     mov ax, cs
     mov ds, ax
@@ -124,6 +128,56 @@ enable_paging:
     mov cr0, eax
 
     ret
+
+dev_write:
+  ; Part 1
+  push edx
+  push eax
+  ; Part 2
+  xor edx, edx
+  xor eax, eax
+  ; Part 32
+  mov dx, [esp + 12]
+  mov al, [esp + 16]
+  ; Part 4
+  out dx, al ; envia o valor de al para o
+  ; número da porta que está em dx
+  ; Part 5
+  pop eax
+  pop edx
+
+  ret
+
+dev_write_word:
+  push edx
+  push eax
+
+  xor edx, edx
+  xor eax, eax
+
+  mov dx, [esp + 12]
+  mov ax, [esp + 16]
+
+  out dx, ax
+
+  pop eax
+  pop edx
+
+  ret
+
+dev_read:
+  push edx
+  
+  xor edx,
+  xor eax, eax
+
+  mov dx, [esp + 8]
+
+  in ax, dx
+
+  pop edx
+
+  ret
 
 start_kernel:
     mov eax, 10h
