@@ -1,4 +1,5 @@
 #include "ata.h"
+#include "heap.h"
 
 //
 // LEITURA DE DISCO
@@ -48,12 +49,12 @@ void *read_disk_chs(int sector)
 // ATA termine seu trabalho.
 // dev_read(BASE_PORT + 7) lê o valor da porta BASE_PORT + 7 que
 // contém o status do dispositivo.
-void wait_drive_until_ready();
+void wait_drive_until_ready()
 {
   int status = 0;
 
   do {
-    status = dev_read(BASE_PORT + 7)
+    status = dev_read(BASE_PORT + 7);
   } while ((status ^ 0x80) == 128);
 }
 

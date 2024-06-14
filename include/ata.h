@@ -1,7 +1,9 @@
 #define BASE_PORT 0x1F0
 #define SECTOR_SIZE 512
 
-extern void dev_write_word();
+extern int dev_write_word();
+extern int dev_write();
+extern int dev_read();
 
 void wait_drive_until_ready();
 
