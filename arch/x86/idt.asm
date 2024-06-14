@@ -1,3 +1,16 @@
+; IRQ (Interruption Request)
+; refere-se a uma solicitação de interrupção enviada por um dispositivo
+; de hardware para o processador. Isso indica que o dispositivo precisa de atenção
+; imediata do sistema operaional ou do BIOS.
+
+; ISR (Interrupt Service Routine)
+; é o código de rotina específico que é executado pelo sistema operacional em resposta a 
+; uma interrupção gerada por um IRQ específico. Cada IRQ tem sua própria ISR.
+
+; Cada IRQ está associado a uma ISR específica no sistema operacional. Quando um IRQ é
+; acionado, o processador invoca imediatamente a ISR correspondente com a IRQ.
+
+
 isr_0:
 	cli
 	push 0
