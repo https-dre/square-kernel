@@ -1,27 +1,25 @@
 
 # square-kernel
 
-Um kernel simples e open-source para aprendizado e hobby.
+Um kernel para processadores x86 simples e open-source, desenvolvido por hobby na tentativa de aprender sobre o assunto. 
 
 <img src="docs/print.png">
 
 # Implementações
 
-- Protected-Mode *32 bits*  *(implemented)*
+- Protected-Mode *32 bits*  *(implementado)*
 
-- Vga-Buffer *(implemented)*
+- Vga-Buffer *(implementado)*
 
-- Basic *PM* - Process Manager *(implemented)*
+- Basic *PM* - Process Manager *(implementado)*
 
-- Basic *MM* - Memory Manager *(implemented)*
+- Basic *MM* - Memory Manager *(implementado)*
 
 - Advanced *PM*
 
 - Hardware Suport (Teclado e etc)
 
-- Basic *FS* - File System
-
-  
+- Basic *FS* - File System *(em progresso)*
 
 ## Compilação e Emulação
 
@@ -33,7 +31,6 @@ Um kernel simples e open-source para aprendizado e hobby.
  - gcc - *compilador C*
  - ld - *linker*
 
-
 ### Baixe um emulador
 
 Para rodar o projeto é necessário baixar em um emulador compatível com x86, no caso do projeto eu uso o QEMU
@@ -44,16 +41,18 @@ Para rodar o projeto é necessário baixar em um emulador compatível com x86, n
 	cd square-kernel
 
 ### Crie um diretório para arquivos de construção
+
 	mkdir build
-
-*Use o script "install" para realizar a instalação em distribuições linux baseadas em Debian*
-
-	chmod +x install
-	./install
 
 ### Rode o Makefile
 
-	make
+Faça a construção da imagem final: 
+
+	make build_
+
+Rode o kernel junto com o bootloader:
+
+    make run
 
 ## Licença
 
