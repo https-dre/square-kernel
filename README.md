@@ -46,13 +46,21 @@ Para rodar o projeto √© necess√°rio baixar em um emulador compat√≠vel com x86, n
 
 ### Rode o Makefile
 
-Fa√ßa a constru√ß√£o da imagem final: 
+Gerando disco virtual com o kernel:
 
-	make build_
+	make build
 
 Rode o kernel junto com o bootloader:
 
     make run
+
+Para rodar o disco virtual no Vmware, use o r√tulo *release_vmware*:
+
+    make release_vmware
+
+Ent√o um disco virtual .vmdk vai ser gerado, tente dar boot nesse disco no Vmware.
+
+**Ainda est√ em uma vers√o inst√vel, algumas falhas est√o sendo corrigidas**
 
 ## Licen√ßa
 
