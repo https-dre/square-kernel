@@ -1,2 +1,3 @@
 /build/*
-square-kernel.iso
+square-kernel.img
+square-vmware.vmdk
