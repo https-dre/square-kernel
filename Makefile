@@ -9,11 +9,14 @@ KERNEL_FILES = $(SRC_DIR)/kernel/main.c
 INCLUDE_DIR = $(SRC_DIR)/include
 KERNEL_FLAGS = -Wno-error=incompatible-pointer-types  -Wno-error=int-conversion -fno-stack-protector -m32 -c -ffreestanding -fno-asynchronous-unwind-tables -fno-pie -Wint-conversion $(addprefix -I, $(INCLUDE_DIR))
 KERNEL_OBJECT = $(BUILD_DIR)/kernel.elf
-OUTFILE = square-kernel.iso
+OUTFILE = square-kernel.img
 LINKER = linker.ld
 LINKER_FILES = $(BUILD_DIR)/starter.o $(KERNEL_OBJECT) $(BUILD_DIR)/vga_buffer.elf $(BUILD_DIR)/process.elf $(BUILD_DIR)/scheduler.elf $(BUILD_DIR)/heap.elf $(BUILD_DIR)/paging.elf $(BUILD_DIR)/ata.elf
+RELEASE_VMDK = square-vmware.vmdk
 
-build_: $(BOOTSTRAP_FILE) $(KERNEL_FILES)
+.PHONY: build clean release
+
+build: $(BOOTSTRAP_FILE) $(KERNEL_FILES)
 	$(ASM) -f bin $(BOOTSTRAP_FILE) -o $(BUILD_DIR)/bootstrap.o
 	$(ASM) -f elf32 $(INIT_KERNEL_FILES) -o $(BUILD_DIR)/starter.o
 	$(CC) $(KERNEL_FLAGS) $(KERNEL_FILES) -o $(KERNEL_OBJECT)
@@ -37,3 +40,7 @@ run: $(OUTFILE)
 clean:
 	rm -rf $(BUILD_DIR)/*
 	rm -f $(OUTFILE)
+
+release_vmware: $(OUTFILE)
+	dd seek=9 conv=sync if=/dev/zero of=$(OUTFILE) bs=512 count=3070
+	qemu-img convert -f raw -O vmdk $(OUTFILE) $(RELEASE_VMDK)
