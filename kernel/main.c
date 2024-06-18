@@ -16,8 +16,8 @@ void kernel_main() {
     set_vga_color_code(new_color_code(Black, LightGreen));
     println("running square-kernel");
     setDefaultColor();
-    process_create(&processA);
-    process_create(&processB);
+    process_create((int*)&processA);
+    process_create((int*)&processB);
     
     while( 1 );
 }

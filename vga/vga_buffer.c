@@ -43,8 +43,8 @@ void println(char *str) {
 void clear_row() {
     for(int row = 0; row < BUFFER_HEIGHT; row++) {
         for(int col = 0; col < BUFFER_WIDTH; col++) {
-            char *character = vga->buffer[row][col];
-            vga->buffer[row - 1][col] = *character;
+            unsigned char character = vga->buffer[row][col];
+            vga->buffer[row - 1][col] = character;
         }
     }
 }
