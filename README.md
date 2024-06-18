@@ -23,9 +23,9 @@ Um kernel para processadores x86 simples e open-source, desenvolvido por hobby n
 
 ## Compilação e Emulação
 
-**Não é recomendado tentar dar boot em uma máquina real, o projeto ainda segue incompleto e não há certeza que a segurança é 100% é garantida**
+**Não é recomendado tentar dar boot em uma máquina real, o projeto ainda segue incompleto e não há certeza que a segurança para o hardware é garantida**
 
-### Dependências de Compilação e Linkagem
+### Dependências de Compilação
 
  - nasm - *compilador assembly x86*
  - gcc - *compilador C*
@@ -33,14 +33,14 @@ Um kernel para processadores x86 simples e open-source, desenvolvido por hobby n
 
 ### Baixe um emulador
 
-Para rodar o projeto é necessário baixar em um emulador compatível com x86, no caso do projeto eu uso o QEMU
+Para rodar o projeto é necessário ter um emulador de x86 instalado, o projeto usa o QEMU
 
 ### Baixe o projeto do github:
 
 	git clone https://github.com/https-dre/square-kernel/tree/main
 	cd square-kernel
 
-### Crie um diretório para arquivos de construção
+### Crie um diretório para os arquivos de construção
 
 	mkdir build
 
@@ -52,16 +52,14 @@ Gerando disco virtual com o kernel:
 
 Rode o kernel junto com o bootloader:
 
-    make run
+	make run
 
-Para rodar o disco virtual no Vmware, use o r�tulo *release_vmware*:
+Para rodar o disco virtual no Vmware:
 
-    make release_vmware
+	make release_vmware
 
-Ent�o um disco virtual .vmdk vai ser gerado, tente dar boot nesse disco no Vmware.
-
-**Ainda est� em uma vers�o inst�vel, algumas falhas est�o sendo corrigidas**
+Então um disco virtual .vmdk vai ser gerado, tente dar boot com esse disco no Vmware.
 
 ## Licença
 
-Este projeto está licenciado sob a Licença Pública Geral GNU v3.0 - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está licenciado sob a Licença Publica Geral GNU v3.0 - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
