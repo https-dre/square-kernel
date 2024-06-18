@@ -66,6 +66,12 @@ void *read_disk(int address)
   dev_write(BASE_PORT + 4, (address & 0x0000FF00) >> 8);
   dev_write(BASE_PORT + 5, (address & 0x00FF0000) >> 16);
   dev_write(BASE_PORT + 7, 0x20);
+
+  short *buffer = kalloc(SECTOR_SIZE);
+  for(int currByte = 0; currByte < (SECTOR_SIZE / 2); currByte++) {
+  	buffer[currByte] = dev_read(BASE_PORT);
+  }
+
 }
 
 
