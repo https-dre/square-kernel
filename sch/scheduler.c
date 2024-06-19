@@ -43,9 +43,8 @@ void scheduler( int eip, int edi, int esi, int ebp, int esp, int ebx, int edx, i
         curr_process->context.edi = edi;
         curr_process->context.eip = eip;
     }
-    
+
     curr_process->state = READY;
-    printi(eax);
 
     // ...
 
