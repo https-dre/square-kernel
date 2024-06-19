@@ -81,3 +81,14 @@ int new_color_code(int background, int color) {
 void setDefaultColor() {
     set_vga_color_code(new_color_code(Black, White));
 }
+
+void clear_screen() {
+  setDefaultColor();
+  vgaWriter.row = 0;
+  vgaWriter.column = 0;
+  for(int row = 0; row < BUFFER_HEIGHT; row++) {
+    for(int column = 0; column < BUFFER_WIDTH; column++) {
+      vga->buffer[row][column] = " ";
+    }
+  }
+}
