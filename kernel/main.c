@@ -3,6 +3,7 @@
 #include "colors.h"
 #include "heap.h"
 #include "paging.h"
+#include "exceptions.h"
 
 void processA();
 void processB();
@@ -39,6 +40,10 @@ void processB()
 }
 
 void interrupt_handler(int interrupt_number) {
+  println("Interrupt Ocurred!");
+    if(interrupt_number <= 31) {
+      exception_handler(interrupt_number);
+    }
     if(interrupt_number == 32) {
         print(".");
     }

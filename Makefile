@@ -11,7 +11,7 @@ KERNEL_FLAGS = -Wno-error=incompatible-pointer-types  -Wno-error=int-conversion 
 KERNEL_OBJECT = $(BUILD_DIR)/kernel.elf
 OUTFILE = square-kernel.img
 LINKER = linker.ld
-LINKER_FILES = $(BUILD_DIR)/starter.o $(KERNEL_OBJECT) $(BUILD_DIR)/vga_buffer.elf $(BUILD_DIR)/process.elf $(BUILD_DIR)/scheduler.elf $(BUILD_DIR)/heap.elf $(BUILD_DIR)/paging.elf $(BUILD_DIR)/ata.elf
+LINKER_FILES = $(BUILD_DIR)/starter.o $(KERNEL_OBJECT) $(BUILD_DIR)/vga_buffer.elf $(BUILD_DIR)/process.elf $(BUILD_DIR)/scheduler.elf $(BUILD_DIR)/heap.elf $(BUILD_DIR)/paging.elf $(BUILD_DIR)/ata.elf $(BUILD_DIR)/exceptions.elf
 RELEASE_VMDK = square-vmware.vmdk
 
 .PHONY: build clean release
@@ -26,6 +26,7 @@ build: $(BOOTSTRAP_FILE) $(KERNEL_FILES)
 	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/mm/heap/heap.c -o $(BUILD_DIR)/heap.elf
 	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/mm/paging/paging.c -o $(BUILD_DIR)/paging.elf
 	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/fs/ata.c -o $(BUILD_DIR)/ata.elf
+	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/kernel/exceptions.c -o $(BUILD_DIR)/exceptions.elf
 
 	ld -melf_i386 -T $(LINKER) $(LINKER_FILES) -o $(BUILD_DIR)/square-kernel.elf 
 	objcopy -O binary $(BUILD_DIR)/square-kernel.elf $(BUILD_DIR)/square-kernel.bin
