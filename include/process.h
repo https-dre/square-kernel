@@ -1,4 +1,4 @@
-typedef enum process_state { READY, RUNNING } process_state_t;
+typedef enum process_state { READY, RUNNING, TERMINATED } process_state_t;
 
 typedef struct process_context
 {
