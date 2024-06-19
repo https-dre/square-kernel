@@ -277,13 +277,19 @@ isr_48:
 	cli
 	push 48
 	jmp irq_basic
+
+terminate_process:
+  cli
+  push 49
+  jmp isr_basic
+
 isr_basic:
 	call interrupt_handler
 	pop eax
     
-    sti
+  sti
 	iret
-	
+
 irq_basic:
     call interrupt_handler
 
@@ -301,7 +307,7 @@ irq_basic:
         pop eax
         sti
         iret
-		
+
 idt:
 	dw isr_0, 8, 0x8e00, 0x0000
 	dw isr_1, 8, 0x8e00, 0x0000
@@ -352,6 +358,7 @@ idt:
 	dw isr_46, 8, 0x8e00, 0x0000
 	dw isr_47, 8, 0x8e00, 0x0000
 	dw isr_48, 8, 0x8e00, 0x0000
+	dw terminate_process, 8, 0x8e00, 0x0000
 idtr:
 	idt_size_in_bytes	: 	dw idtr - idt
 	idt_base_address	: 	dd idt
