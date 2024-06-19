@@ -4,9 +4,11 @@
 
 
 void exception_handler(int code) {
-  set_vga_color_code(new_color_code(Red, Black));
-  println("   FAULT OCURRED: ");
+  set_vga_color_code(new_color_code(Black, Red));
+  print("\nFAULT OCURRED: ");
   printi(code);
   setDefaultColor();
+  println("\n CPU Halted!");
+  asm("cli");
   asm("hlt");
 }
