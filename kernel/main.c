@@ -9,17 +9,19 @@ void systemroot();
 
 void kernel_main() {
     heap_init();
-    paging_init();  
+    paging_init();
+    //process_init();
+    //scheduler_init();
     vga_init();
-    process_init();
-    scheduler_init();
     set_vga_color_code(new_color_code(Black, LightGreen));
     println("running square-kernel");
-    setDefaultColor();
+    //int teste_alloc = kalloc(sizeof(int));
+    //printi(teste_alloc);
+    //setDefaultColor();
     process_create((int*)&systemroot);
-    asm("int $49");
+    //asm("int $49");
     
-    while( 1 );
+    while(1);
 }
 
 void systemroot()
