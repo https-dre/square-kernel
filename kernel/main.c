@@ -13,20 +13,14 @@ void kernel_main() {
     //process_init();
     //scheduler_init();
     vga_init();
-    set_vga_color_code(new_color_code(Black, LightGreen));
-    println("running square-kernel");
-    //int teste_alloc = kalloc(sizeof(int));
-    //printi(teste_alloc);
-    //setDefaultColor();
     process_create((int*)&systemroot);
-    //asm("int $49");
-    
     while(1);
 }
 
 void systemroot()
 {
     println("\nrunning systemroot -->");
+    println("   square-kernel :)");
     while(1);
 }
 
