@@ -26,7 +26,7 @@ build: clean $(BOOTSTRAP_FILE) $(KERNEL_FILES)
 	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/sch/scheduler.c -o $(BUILD_DIR)/scheduler.elf
 	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/mm/heap/heap.c -o $(BUILD_DIR)/heap.elf
 	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/mm/paging/paging.c -o $(BUILD_DIR)/paging.elf
-	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/fs/ata.c -o $(BUILD_DIR)/ata.elf
+	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/drivers/ata.c -o $(BUILD_DIR)/ata.elf
 	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/kernel/exceptions.c -o $(BUILD_DIR)/exceptions.elf
 
 	ld -melf_i386 -T $(LINKER) $(LINKER_FILES) -o $(BUILD_DIR)/square-kernel.elf 
