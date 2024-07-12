@@ -11,7 +11,7 @@ void process_init()
 }
 
 void process_create(int *base_address) {
-    process_t *process = (process_t *)kalloc(sizeof(process_t));
+    process_t *process = (process_t *)malloc(sizeof(process_t));
     process->pid = curr_pid++;
     
     process->context.eax = 0;

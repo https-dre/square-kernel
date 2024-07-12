@@ -1,5 +1,6 @@
 #include "paging.h"
 #include "heap.h"
+#include "vga_buffer.h"
 
 // loads the address of the kernel's page directory in the register CR3
 extern void load_page_directory();
@@ -28,10 +29,13 @@ void paging_init()
 {
     unsigned int curr_page_frame = 0;
 
-    page_directory = (unsigned int *)kalloc(4 * 1024);
+    page_directory = (unsigned int *)malloc(4 * 1024);
+    if(*page_directory == -1) {
+        return;
+    }
 
     for(int currPDE = 0; currPDE < PDE_NUM; currPDE++) {
-        unsigned int *pagetable = (unsigned int *)kalloc(4 * PTE_NUM);
+        unsigned int *pagetable = (unsigned int *)malloc(4 * PTE_NUM);
 
         for (int currPTE = 0; currPTE < PTE_NUM; currPTE++, curr_page_frame++) {
             pagetable[currPTE] = create_page_entry(curr_page_frame * 4096, 1, 0, 0, 1, 1, 0, 0, 0);
