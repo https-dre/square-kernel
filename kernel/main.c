@@ -5,25 +5,6 @@
 #include "paging.h"
 #include "exceptions.h"
 
-void systemroot();
-
-void kernel_main() {
-    heap_init();
-    paging_init();
-    //process_init();
-    //scheduler_init();
-    vga_init();
-    process_create((int*)&systemroot);
-    while(1);
-}
-
-void systemroot()
-{
-    println("\nrunning systemroot -->");
-    println("   square-kernel :)");
-    while(1);
-}
-
 void interrupt_handler(int interrupt_number) {
   if(interrupt_number <= 31) {
     exception_handler(interrupt_number);
@@ -40,3 +21,22 @@ void interrupt_handler(int interrupt_number) {
     break;
   }
 }
+
+void systemroot()
+{
+    println("\nrunning systemroot -->");
+    println("   square-kernel :)");
+    while(1);
+}
+
+void kernel_main() {
+    heap_init();
+    paging_init();
+    vga_init();
+    //process_init();
+    //scheduler_init();
+    /* process_create((int*)&systemroot); */
+    println("Hello World!");
+    while(1);
+}
+
