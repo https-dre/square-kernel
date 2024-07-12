@@ -5,35 +5,36 @@ int blocks_count;
 int MAX_HEAP_SIZE = 3000 * 4096;
 int HEAP_START_ADDRESS = 0x100000;
 
-block_t head;
+block_t *head;
 block_t *last_block;
 
-void map_heap() {
+block_t* map_heap() {
   // Inicializa o primeiro bloco
-  head.start_address = heap_base;
-  head.state = FREE;
-  head.size = 16; // Define um tamanho inicial maior
-  head.has_next = 0; 
-  last_block = &head;
-  heap_base += head.size;
+  block_t* init_region = (block_t*)HEAP_START_ADDRESS;
+  init_region->start_address = HEAP_START_ADDRESS;
+  init_region->state = FREE;
+  init_region->size = 16;
+  init_region->has_next = 0; 
+  heap_base += init_region->size;
+  return init_region;
 }
 
 void heap_init()
 {
-    heap_base = 0x100000;
-    map_heap();
+    heap_base = HEAP_START_ADDRESS;
+    head = map_heap();
 }
 
 // Mapeia a memória Heap por uma Grande Linked List
-block_t* push_block(unsigned int address, unsigned int size) {
+block_t* push_block(unsigned int address, unsigned int size, block_t *heap_head) {
   // Cria novo bloco
-  block_t *new_block;
+  block_t *new_block = (block_t*)address;
   new_block->start_address = address;
   new_block->size = size;
   new_block->state = FREE; 
   new_block->has_next = 0;
 
-  block_t *curr = &head;
+  block_t *curr = heap_head;
   while(curr->has_next == 1) {
     curr = curr->next;
   }
@@ -41,7 +42,6 @@ block_t* push_block(unsigned int address, unsigned int size) {
   // Agora curr aponta para o último bloco da lista
   curr->has_next = 1;
   curr->next = new_block;
-  last_block = new_block; // Atualiza last_block
   blocks_count++;
 
   return new_block;
@@ -57,7 +57,7 @@ int* malloc(int bytes) {
     return -1;
   }
 
-  block_t *curr = &head;
+  block_t *curr = head;
 
   while(curr->has_next == 1) {
     if(curr->state == FREE && curr->size >= bytes) {
@@ -78,17 +78,10 @@ int* malloc(int bytes) {
     unsigned int new_object_address = heap_base;
     heap_base += bytes+1;
 
-    block_t *new_block = push_block(new_object_address, bytes);
+    block_t *new_block = push_block(new_object_address, bytes, head);
     new_block->state = BUSY;
 
     return (int*)new_block->start_address;
-}
-
-int kalloc(int bytes) {
-  unsigned int new_object_address = heap_base;
-  heap_base += bytes;
-
-  return new_object_address;
 }
 
 void kfree(int address) {
@@ -97,8 +90,8 @@ void kfree(int address) {
     return;
   }
 
-  block_t *curr = &head;
-  while (curr->has_next) {
+  block_t *curr = head;
+  while (curr->has_next == 1) {
     if((int)curr->start_address == address) {
       curr->state = FREE;
       return;
