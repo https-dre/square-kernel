@@ -13,11 +13,9 @@ typedef struct block {
 
 extern unsigned int heap_base;
 extern int blocks_count;
-extern block_t head;
-extern block_t *last_block;
+extern block_t *head;
 
 void heap_init();
-block_t *push_block(unsigned int, unsigned int);
-int kalloc(int);
+block_t *push_block(unsigned int, unsigned int, block_t*);
 void kfree(int);
 int* malloc(int);
