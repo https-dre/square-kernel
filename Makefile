@@ -37,7 +37,7 @@ build: clean $(BOOTSTRAP_FILE) $(KERNEL_FILES)
 	dd seek=9 conv=sync if=/dev/zero of=$(OUTFILE) bs=512 count=2046
 
 run: $(OUTFILE)
-	qemu-system-x86_64 -s -drive format=raw,file=$(OUTFILE)
+	qemu-system-x86_64 -s -no-reboot -d int -drive format=raw,file=$(OUTFILE)
 
 debug: clean debug_build
 	qemu-system-x86_64 -s -S -drive format=raw,file=$(OUTFILE)
