@@ -4,7 +4,7 @@ typedef enum {
 } block_state;
 
 typedef struct block {
-  unsigned int *start_address;
+  unsigned int start_address;
   unsigned int size;
   block_state state;
   int has_next;
@@ -17,7 +17,7 @@ extern block_t head;
 extern block_t *last_block;
 
 void heap_init();
-block_t *push_block(unsigned int*, unsigned int);
+block_t *push_block(unsigned int, unsigned int);
 int kalloc(int);
 void kfree(int);
-int malloc(int);
+int* malloc(int);
