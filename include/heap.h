@@ -3,12 +3,14 @@ typedef enum {
   BUSY
 } block_state;
 
-typedef struct block {
+#define NULL ((void*)0)
+
+typedef struct block_t {
   unsigned int start_address;
   unsigned int size;
   block_state state;
   int has_next;
-  struct block *next;
+  struct block_t *next;
 } block_t;
 
 extern unsigned int heap_base;

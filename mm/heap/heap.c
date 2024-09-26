@@ -4,18 +4,17 @@ unsigned int heap_base;
 int blocks_count;
 int MAX_HEAP_SIZE = 3000 * 4096;
 int HEAP_START_ADDRESS = 0x100000;
-
+block_t* init_region = (block_t*)HEAP_START_ADDRESS;
 block_t *head;
 block_t *last_block;
 
 block_t* map_heap() {
   // Inicializa o primeiro bloco
-  block_t* init_region = (block_t*)HEAP_START_ADDRESS;
   init_region->start_address = HEAP_START_ADDRESS;
   init_region->state = FREE;
   init_region->size = 16;
   init_region->has_next = 0; 
-  heap_base += init_region->size;
+  heap_base = init_region->start_address + init_region->size;
   return init_region;
 }
 
@@ -35,8 +34,8 @@ block_t* push_block(unsigned int address, unsigned int size, block_t *heap_head)
   new_block->has_next = 0;
 
   block_t *curr = heap_head;
-  while(curr->has_next == 1) {
-    curr = curr->next;
+  while (curr->next != NULL) {
+    curr = curr->next;  
   }
 
   // Agora curr aponta para o último bloco da lista
@@ -51,37 +50,33 @@ block_t* push_block(unsigned int address, unsigned int size, block_t *heap_head)
   .: Acessa membros de uma estrutura diretamente.
   ->: Acessa membros de uma estrutura através de um ponteiro para a estrutura.
 */
+
 int* malloc(int bytes) {
   // Verifica se há memória suficiente disponível
   if (heap_base + bytes > HEAP_START_ADDRESS + MAX_HEAP_SIZE) {
-    return -1;
+    return NULL;
   }
 
   block_t *curr = head;
 
-  while(curr->has_next == 1) {
-    if(curr->state == FREE && curr->size >= bytes) {
-      // Encontrou um bloco livre e grande o suficiente
-      curr->state = BUSY;
-      return (int*)curr->start_address;
+  while (curr != NULL) {
+    if (curr->state == FREE && curr->size >= bytes) {
+        curr->state = BUSY;
+        return (int*)curr->start_address;
     }
-      curr = curr->next;
-    }
+    curr = curr->has_next ? curr->next : NULL; // Move para o próximo bloco, se houver
+  }
 
+  if(curr->state == FREE && curr->size >= bytes) {
+    curr->state = BUSY;      
+    return (int*)curr->start_address;
+  }
+
+  // Não encontrou um bloco livre e adequado, aloca um novo bloco
     
-    if(curr->state == FREE && curr->size >= bytes) {
-      curr->state = BUSY;
-      return (int*)curr->start_address;
-    }
-
-    // Não encontrou um bloco livre e adequado, aloca um novo bloco
-    unsigned int new_object_address = heap_base;
-    heap_base += bytes+1;
-
-    block_t *new_block = push_block(new_object_address, bytes, head);
-    new_block->state = BUSY;
-
-    return (int*)new_block->start_address;
+  block_t *new_block = push_block(curr->start_address+curr->size, bytes, head);
+  new_block->state = BUSY;
+  return (int*)new_block->start_address;
 }
 
 void kfree(int address) {

@@ -33,9 +33,9 @@ void kernel_main() {
     heap_init();
     paging_init();
     vga_init();
-    //process_init();
-    //scheduler_init();
-    /* process_create((int*)&systemroot); */
+    process_init();
+    scheduler_init();
+    process_create((int*)&systemroot);
     println("Hello World!");
     while(1);
 }
