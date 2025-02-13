@@ -168,7 +168,7 @@ dev_write_word:
 dev_read:
   push edx
   
-  xor edx,
+  xor edx, edx
   xor eax, eax
 
   mov dx, [esp + 8]
