@@ -12,6 +12,7 @@ KERNEL_OBJECT = $(BUILD_DIR)/kernel.elf
 OUTFILE = square-kernel.iso
 LINKER = linker.ld
 LINKER_FILES = $(BUILD_DIR)/starter.o $(KERNEL_OBJECT) $(BUILD_DIR)/vga_buffer.elf $(BUILD_DIR)/process.elf $(BUILD_DIR)/scheduler.elf $(BUILD_DIR)/heap.elf $(BUILD_DIR)/paging.elf
+DEBUG_FLAGS = -g
 
 build_: $(BOOTSTRAP_FILE) $(KERNEL_FILES)
 	$(ASM) -f bin $(BOOTSTRAP_FILE) -o $(BUILD_DIR)/bootstrap.o
@@ -23,7 +24,7 @@ build_: $(BOOTSTRAP_FILE) $(KERNEL_FILES)
 	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/mm/heap/heap.c -o $(BUILD_DIR)/heap.elf
 	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/mm/paging/paging.c -o $(BUILD_DIR)/paging.elf
 
-	ld -melf_i386 -T $(LINKER) $(LINKER_FILES) -o $(BUILD_DIR)/square-kernel.elf 
+	ld -melf_i386 -T $(LINKER) -o $(BUILD_DIR)/square-kernel.elf $(LINKER_FILES) 
 	objcopy -O binary $(BUILD_DIR)/square-kernel.elf $(BUILD_DIR)/square-kernel.bin
 
 	dd if=$(BUILD_DIR)/bootstrap.o of=$(OUTFILE)
@@ -31,8 +32,26 @@ build_: $(BOOTSTRAP_FILE) $(KERNEL_FILES)
 	dd seek=9 conv=sync if=/dev/zero of=$(OUTFILE) bs=512 count=2046
 
 run: $(OUTFILE)
-	qemu-system-x86_64 -s -drive format=raw,file=$(OUTFILE)
+	qemu-system-i386 -s -S -drive format=raw,file=$(OUTFILE)
 
 clean:
 	rm -rf $(BUILD_DIR)/*
 	rm -f $(OUTFILE)
+
+debug: $(BOOTSTRAP_FILE) $(KERNEL_FILES)
+	$(ASM) -f bin $(BOOTSTRAP_FILE) -o $(BUILD_DIR)/bootstrap.o
+	$(ASM) -f elf32 $(INIT_KERNEL_FILES) -Werror -o $(BUILD_DIR)/starter.o
+	$(CC) $(KERNEL_FLAGS) $(DEBUG_FLAGS) $(KERNEL_FILES) -o $(KERNEL_OBJECT)
+	$(CC) $(KERNEL_FLAGS) $(DEBUG_FLAGS) $(SRC_DIR)/vga/vga_buffer.c -o $(BUILD_DIR)/vga_buffer.elf
+	$(CC) $(KERNEL_FLAGS) $(DEBUG_FLAGS) $(SRC_DIR)/process/process.c -o $(BUILD_DIR)/process.elf
+	$(CC) $(KERNEL_FLAGS) $(DEBUG_FLAGS) $(SRC_DIR)/sch/scheduler.c -o $(BUILD_DIR)/scheduler.elf
+	$(CC) $(KERNEL_FLAGS) $(DEBUG_FLAGS) $(SRC_DIR)/mm/heap/heap.c -o $(BUILD_DIR)/heap.elf
+	$(CC) $(KERNEL_FLAGS) $(DEBUG_FLAGS) $(SRC_DIR)/mm/paging/paging.c -o $(BUILD_DIR)/paging.elf
+
+	ld -melf_i386 -T $(LINKER) -o $(BUILD_DIR)/square-kernel.elf $(LINKER_FILES)  
+	objcopy -O binary $(BUILD_DIR)/square-kernel.elf $(BUILD_DIR)/square-kernel.bin
+	
+	dd if=$(BUILD_DIR)/bootstrap.o of=$(OUTFILE)
+	dd seek=1 conv=sync if=$(BUILD_DIR)/square-kernel.bin of=$(OUTFILE) bs=512 count=8
+	dd seek=9 conv=sync if=/dev/zero of=$(OUTFILE) bs=512 count=2046
+	qemu-system-i386 -s -S -drive format=raw,file=$(OUTFILE)

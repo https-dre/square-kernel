@@ -70,6 +70,12 @@ void printi(int number) {
     }
 }
 
+void errorPrint(char *str) {
+    set_vga_color_code(new_color_code(Red, Black));
+    println(str);
+    setDefaultColor();
+}
+
 void set_vga_color_code(int color) {
     vgaWriter.color_code = color;
 }

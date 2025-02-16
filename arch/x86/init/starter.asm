@@ -22,7 +22,7 @@ start:
     call setup_interrupts
     call load_task_register
 
-    call 08h:start_kernel
+    jmp 08h:start_kernel
 
 setup_interrupts:
     call remap_pic
@@ -116,18 +116,19 @@ load_task_register:
     ret
 
 bits 32
-load_page_directory:
-    mov eax, [page_directory]
+load_page_directory_0:
+    mov eax, [page_directory]  ; Carregar o endereço correto
     mov cr3, eax
-
     ret
-
-enable_paging:
+	
+enable_paging_0:
+    cli
     mov eax, cr0
-    or eax, 80000000h
+    or eax, 0x80000000
     mov cr0, eax
-
+    jmp $+2   ; Pequeno salto para garantir que o pipeline seja limpo
     ret
+
 
 dev_write:
   ; Part 1

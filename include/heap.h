@@ -10,4 +10,4 @@ typedef struct Block {
 
 extern Block* heap_base;
 void heap_init();
-void* kalloc(int);
+int kalloc(int);
