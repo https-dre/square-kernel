@@ -2,11 +2,9 @@
 #include "stdint.h"
 #include "stddef.h"
 #include "vga_buffer.h"
+#include "memory_manager.h"
 
 static uint8_t *bitmap = (uint8_t*)0xffff;
-
-#define BASE_VIRTUAL 0x100000
-#define BASE_FISICA  0x00000000  // Endereço real onde começa a memória física
 
 void* virtual_to_physical(void* virtual_address) {
     uintptr_t v_addr = (uintptr_t)virtual_address;
