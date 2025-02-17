@@ -1,23 +1,16 @@
-SECTIONS
-{
-  .text 0x09000 :
-  {
-    code = .; _code = .; __code = .;
-    *(.text)
-  }
+ENTRY(start)
 
-  .data :
-  {
-     data = .; _data = .; __data = .;
-     *(.data)
-     *(.rodata)
-  }
+SECTIONS {
+    . = 1M;
 
-  .bss :
-  {
-    bss = .; _bss = .; __bss = .;
-    *(.bss)
-  }
+    .boot :
+    {
+        /* ensure that the multiboot header is at the beginning */
+        *(.multiboot_header)
+    }
 
-  end = .; _end = .; __end = .;
-} 
+    .text :
+    {
+        *(.text)
+    }
+}

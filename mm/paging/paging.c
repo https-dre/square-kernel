@@ -1,18 +1,43 @@
 #include "paging.h"
-#include "heap.h"
+#include "memory_manager.h"
 #include "vga_buffer.h"
+#include "stdint.h"
+#include "stddef.h"
+#include "string.h"
+#include "page_allocator.h"
 
-// loads the address of the kernel's page directory in the register CR3
-extern void load_page_directory();
-extern void enable_paging();
+uintptr_t *page_directory;
 
-unsigned int *page_directory;
+void flush_tlb() {
+    uintptr_t cr3;
+    asm volatile("mov %%cr3, %0" : "=r"(cr3));
+    asm volatile("mov %0, %%cr3" :: "r"(cr3));
+}
 
-int create_page_entry( int base_address, char present, char writable, 
-char privilege_level, char cache_enabled, char write_through_cache, 
-char accessed, char page_size, char dirty ) {
-    int entry = 0;
+void enable_paging(uintptr_t page_directory) {
+    uintptr_t cr0;
 
+    // Lê o valor atual de cr0
+    asm volatile("mov %%cr0, %0" : "=r"(cr0));  // O operando %0 deve ser um registrador de 32 bits.
+
+    // Ativa a paginação (bit 31)
+    cr0 |= 0x80000000;  // Define o bit 31 de cr0 para ativar a paginação
+
+    // Atualiza cr0 com o novo valor
+    asm volatile("mov %%cr0, %0" :: "r"(cr0));  // O operando %0 deve ser um registrador de 32 bits
+
+    // Carrega o diretório de páginas em cr3
+    asm volatile("mov %%cr3, %0" :: "r"(page_directory));  // A instrução mov deve ter a sintaxe correta
+
+    println("MMU: Paging Enabled!");  // Exibe uma mensagem indicando que a paginação foi ativada
+}
+
+
+int create_page_entry(int base_address, char present, char writable, 
+        char privilege_level, char cache_enabled, 
+        char write_through_cache, char accessed, 
+        char page_size, char dirty) {
+    int entry = (base_address & ~0xFFF); // Ensure 4 KB alignment
     entry |= present;
     entry |= writable << 1;
     entry |= privilege_level << 2;
@@ -21,32 +46,47 @@ char accessed, char page_size, char dirty ) {
     entry |= accessed << 5;
     entry |= dirty << 6;
     entry |= page_size << 7;
-
-    return base_address | entry;
+    return entry;
 }
 
-void paging_init()
-{
+void paging_init() {
     unsigned int curr_page_frame = 0;
+    init_page_allocator();
 
-    page_directory = (unsigned int *)malloc(4 * 1024);
-    if(*page_directory == -1) {
+    page_directory = (uintptr_t*)alloc_page();
+
+    if(page_directory == NULL) {
+        errorPrint("Error: Unable to allocate page directory!");
+        int c = debug_pages();
+        printi((int)page_directory);
         return;
     }
 
-    for(int currPDE = 0; currPDE < PDE_NUM; currPDE++) {
-        unsigned int *pagetable = (unsigned int *)malloc(4 * PTE_NUM);
+    memset(page_directory, 0, 1024 * sizeof(uintptr_t));
 
-        for (int currPTE = 0; currPTE < PTE_NUM; currPTE++, curr_page_frame++) {
-            pagetable[currPTE] = create_page_entry(curr_page_frame * 4096, 1, 0, 0, 1, 1, 0, 0, 0);
+    for(int currPDE = 0; currPDE < PDE_NUM; currPDE++) {
+        uintptr_t *page_table = (uintptr_t*)alloc_page();
+        if(page_table == NULL) {
+            errorPrint("Error: Unable to allocate page table!");
+            return;
         }
-        page_directory[currPDE] = create_page_entry((int)pagetable, 1, 0, 0, 1, 1, 0, 0, 0);
+        memset(page_table, 0, 1024 * sizeof(uintptr_t));
+
+        for(int currPTE = 0; currPTE < PTE_NUM; currPTE++) {
+            page_table[currPTE] = 
+            create_page_entry(curr_page_frame * PAGE_SIZE, 1, 0, 0, 1, 1, 0, 0, 0);
+        }
+        page_directory[currPDE] =
+            create_page_entry((uintptr_t)page_table, 1, 0, 0, 1, 1, 0, 0, 0);
     }
 
-    // ...
+    uintptr_t physical_page_directory = virtual_to_physical((uintptr_t)page_directory);
+    print("Page Directory: ");
+    printi((int)page_directory);
+    print("\nPhysical Page Directory: ");
+    printi((int)physical_page_directory);
+    print("\n");
+    //printi((int)physical_page_directory);
 
-    // PART 2
-
-    load_page_directory();
-    enable_paging();
+    enable_paging(physical_page_directory);
 }

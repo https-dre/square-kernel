@@ -9,17 +9,19 @@ Um kernel para processadores x86 simples e open-source, desenvolvido por hobby n
 
 - Protected-Mode *32 bits*  *(implementado)*
 
-- Vga-Buffer *(implementado)*
+- Video: Vga-Buffer *(implementado)*
 
-- Basic *PM* - Process Manager *(implementado)*
+- Basic *MM* - Memory Manager *(em progresso)*
 
-- Basic *MM* - Memory Manager *(implementado)*
+- Basic *PM* - Process Manager
 
 - Advanced *PM*
 
+- Basic *FS* - File System
+
 - Hardware Suport (Teclado e etc)
 
-- Basic *FS* - File System *(em progresso)*
+  
 
 ## Compilação e Emulação
 

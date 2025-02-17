@@ -8,6 +8,7 @@ void scheduler_init()
 {
     next_sch_pid = 0;
     curr_sch_pid = 0;
+    println("Scheduler Initialized");
 }
 
 process_t *get_next_process() {
@@ -22,6 +23,9 @@ process_t *get_next_process() {
 void scheduler( int eip, int edi, int esi, int ebp, int esp, int ebx, int edx, int ecx, int eax )
 {
     process_t *curr_process;
+    if(processes_count == 0) {
+        return;
+    }
     // ...
 
     // 1
@@ -59,8 +63,6 @@ void scheduler( int eip, int edi, int esi, int ebp, int esp, int ebx, int edx, i
                 "r" ( next_process->context.esi ), "r" ( next_process->context.edi ) );
     
     next_process->state = RUNNING;
-
-
 }
 
 void run_next_process() {
