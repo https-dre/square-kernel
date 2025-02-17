@@ -7,19 +7,19 @@ Um kernel simples e open-source para aprendizado e hobby.
 
 # Implementações
 
-- Protected-Mode *32 bits*  *(implemented)*
+- Protected-Mode *32 bits*  *(implementado)*
 
-- Vga-Buffer *(implemented)*
+- Video: Vga-Buffer *(implementado)*
 
-- Basic *PM* - Process Manager *(implemented)*
+- Basic *MM* - Memory Manager *(em progresso)*
 
-- Basic *MM* - Memory Manager *(implemented)*
+- Basic *PM* - Process Manager
 
 - Advanced *PM*
 
-- Hardware Suport (Teclado e etc)
-
 - Basic *FS* - File System
+
+- Hardware Suport (Teclado e etc)
 
   
 
