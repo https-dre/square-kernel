@@ -68,15 +68,6 @@ void paging_init() {
         return;
     }
 
-    // Get the physical address of the page directory
-    unsigned int physical_page_directory = virtual_to_physical((unsigned int)page_directory);
-    printi((int)physical_page_directory);  // Print the physical address of the page directory
-
-    if ((int)physical_page_directory == -1) {
-        errorPrint("Error converting page directory to physical address");
-        return;
-    }
-
     // Initialize the page directory entries
     for (int currPDE = 0; currPDE < PDE_NUM; currPDE++) {
         unsigned int *pagetable = (unsigned int *)kalloc(PTE_NUM * sizeof(unsigned int));
@@ -98,9 +89,19 @@ void paging_init() {
         );
     }
 
+    // Get the physical address of the page directory
+    unsigned int physical_page_directory = virtual_to_physical((unsigned int)page_directory);
+    printi((int)physical_page_directory);  // Print the physical address of the page directory
+
+    if ((int)physical_page_directory == -1) {
+        errorPrint("Error converting page directory to physical address");
+        return;
+    }
+
     // Load the page directory into CR3
     //load_page_directory(physical_page_directory);
 
     // Enable paging
     //enable_paging();
+    println("Memory: Paging Initialized!");
 }

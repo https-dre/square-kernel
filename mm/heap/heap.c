@@ -10,6 +10,7 @@ void heap_init() {
     heap_base->next = NULL;
     heap_base->free = 1;
     last_block = heap_base;
+    println("Memory: Heap Initialized!");
 }
 
 int push_block(int size) {
