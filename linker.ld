@@ -1,23 +1,16 @@
-SECTIONS
-{
-  .text 0x09000 : 
-  {
-    code = .; _code = .; __code = .;
-    *(.text)
-  } = 0xE0  /* RX (Leitura e Execução) */
+ENTRY(start)
 
-  .data : 
-  {
-     data = .; _data = .; __data = .;
-     *(.data)
-     *(.rodata)
-  } = 0xC0  /* RW (Leitura e Escrita) */
+SECTIONS {
+    . = 1M;
 
-  .bss : 
-  {
-    bss = .; _bss = .; __bss = .;
-    *(.bss)
-  } = 0xC0  /* RW (Leitura e Escrita) */
+    .boot :
+    {
+        /* ensure that the multiboot header is at the beginning */
+        *(.multiboot_header)
+    }
 
-  end = .; _end = .; __end = .;
+    .text :
+    {
+        *(.text)
+    }
 }
