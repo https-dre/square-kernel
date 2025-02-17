@@ -1,3 +1,4 @@
 /build/*
 square-kernel.iso
 root_iso/boot/square-kernel.elf
+/.vscode/*
