@@ -1,21 +1,37 @@
 #include "paging.h"
 #include "heap.h"
 #include "vga_buffer.h"
+#include "stdint.h"
+#include "stddef.h"
+#include "string.h"
+#include "page_allocator.h"
 
-unsigned int *page_directory;
+uintptr_t *page_directory;
 
-// loads the address of the kernel's page directory in the register CR3
-void load_page_directory(unsigned int page_directory) {
-    printi((int)page_directory);  // Print the address of the page directory
-    asm volatile("mov %0, %%cr3" :: "r"(page_directory));
+void flush_tlb() {
+    uintptr_t cr3;
+    asm volatile("mov %%cr3, %0" : "=r"(cr3));
+    asm volatile("mov %0, %%cr3" :: "r"(cr3));
 }
 
-void enable_paging() {
-    unsigned int cr0;
-    asm volatile("mov %%cr0, %0" : "=r"(cr0));
-    cr0 |= 0x80000000; // Enable paging (bit 31)
-    asm volatile("mov %0, %%cr0" :: "r"(cr0));
+void enable_paging(uintptr_t page_directory) {
+    uintptr_t cr0;
+
+    // Lê o valor atual de cr0
+    asm volatile("mov %%cr0, %0" : "=r"(cr0));  // O operando %0 deve ser um registrador de 32 bits.
+
+    // Ativa a paginação (bit 31)
+    cr0 |= 0x80000000;  // Define o bit 31 de cr0 para ativar a paginação
+
+    // Atualiza cr0 com o novo valor
+    asm volatile("mov %%cr0, %0" :: "r"(cr0));  // O operando %0 deve ser um registrador de 32 bits
+
+    // Carrega o diretório de páginas em cr3
+    asm volatile("mov %%cr3, %0" :: "r"(page_directory));  // A instrução mov deve ter a sintaxe correta
+
+    println("MMU: Paging Enabled!");  // Exibe uma mensagem indicando que a paginação foi ativada
 }
+
 
 int create_page_entry(int base_address, char present, char writable, 
         char privilege_level, char cache_enabled, 
@@ -33,75 +49,44 @@ int create_page_entry(int base_address, char present, char writable,
     return entry;
 }
 
-unsigned int virtual_to_physical(unsigned int virtual_addr) {
-    unsigned int dir_index = (virtual_addr >> 22) & 0x3FF;  // Directory index
-    unsigned int table_index = (virtual_addr >> 12) & 0x3FF; // Table index
-    unsigned int offset = virtual_addr & 0xFFF; // Offset
-
-    // Check if page directory is present
-    if (!(page_directory[dir_index] & 1)) {
-        errorPrint("Error: Page directory not mapped!");
-        return 0;  // Invalid address
-    }
-
-    // Get the address of the page table
-    unsigned int *page_table = (unsigned int*)kalloc(4 * 1024);
-
-    // Check if the page is present in the page table
-    if (!(page_table[table_index] & 1)) {
-        errorPrint("Error: Page not allocated!");
-        return 0;  // Invalid address
-    }
-
-    // Return the physical address by combining the page table entry with the offset
-    return (page_table[table_index] & ~0xFFF) + offset;
-}
-
 void paging_init() {
     unsigned int curr_page_frame = 0;
+    init_page_allocator();
 
-    // Allocate memory for the page directory and align to 4KB
-    page_directory = (unsigned int *)((kalloc(4 * 1024) + 0xFFF) & ~0xFFF);
+    page_directory = (uintptr_t*)alloc_page();
 
-    if ((int)page_directory == -1) {
-        errorPrint("Error allocating memory for page directory");
+    if(page_directory == NULL) {
+        errorPrint("Error: Unable to allocate page directory!");
+        int c = debug_pages();
+        printi((int)page_directory);
         return;
     }
 
-    // Initialize the page directory entries
-    for (int currPDE = 0; currPDE < PDE_NUM; currPDE++) {
-        unsigned int *pagetable = (unsigned int *)kalloc(PTE_NUM * sizeof(unsigned int));
-        if ((int)pagetable == -1) {
-            errorPrint("Error allocating memory for page table");
-            printi(1010);
+    memset(page_directory, 0, 1024 * sizeof(uintptr_t));
+
+    for(int currPDE = 0; currPDE < PDE_NUM; currPDE++) {
+        uintptr_t *page_table = (uintptr_t*)alloc_page();
+        if(page_table == NULL) {
+            errorPrint("Error: Unable to allocate page table!");
             return;
         }
+        memset(page_table, 0, 1024 * sizeof(uintptr_t));
 
-        // Initialize the page table entries
-        for (int currPTE = 0; currPTE < PTE_NUM; currPTE++, curr_page_frame++) {
-            pagetable[currPTE] = create_page_entry(curr_page_frame * 4096, 1, 0, 0, 1, 1, 0, 0, 0);
+        for(int currPTE = 0; currPTE < PTE_NUM; currPTE++) {
+            page_table[currPTE] = 
+            create_page_entry(curr_page_frame * PAGE_SIZE, 1, 0, 0, 1, 1, 0, 0, 0);
         }
-
-        // Update the page directory with the physical address of the page table
-        page_directory[currPDE] = create_page_entry(
-            virtual_to_physical((unsigned int)pagetable),  // Convert the page table address to physical
-            1, 0, 0, 1, 1, 0, 0, 0
-        );
+        page_directory[currPDE] =
+            create_page_entry((uintptr_t)page_table, 1, 0, 0, 1, 1, 0, 0, 0);
     }
 
-    // Get the physical address of the page directory
-    unsigned int physical_page_directory = virtual_to_physical((unsigned int)page_directory);
-    printi((int)physical_page_directory);  // Print the physical address of the page directory
+    uintptr_t physical_page_directory = virtual_to_physical((uintptr_t)page_directory);
+    print("Page Directory: ");
+    printi((int)page_directory);
+    print("\nPhysical Page Directory: ");
+    printi((int)physical_page_directory);
+    print("\n");
+    //printi((int)physical_page_directory);
 
-    if ((int)physical_page_directory == -1) {
-        errorPrint("Error converting page directory to physical address");
-        return;
-    }
-
-    // Load the page directory into CR3
-    //load_page_directory(physical_page_directory);
-
-    // Enable paging
-    //enable_paging();
-    println("Memory: Paging Initialized!");
+    enable_paging(physical_page_directory);
 }
