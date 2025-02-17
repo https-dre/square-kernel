@@ -1,5 +1,5 @@
 #include "paging.h"
-#include "heap.h"
+#include "memory_manager.h"
 #include "vga_buffer.h"
 #include "stdint.h"
 #include "stddef.h"
