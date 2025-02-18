@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "vga_buffer.h": "c",
-        "process.h": "c"
-    }
-}
