@@ -1,5 +1,5 @@
 #include "gdt.h"
-
+#include <vga_buffer.h>
 // gdt.c
 struct gdt_entry gdt[GDT_SIZE];  // Definição real de gdt
 struct gdt_ptr gp;               // Definição real de gp
@@ -34,4 +34,5 @@ void init_gdt(void) {
     gp.base = (unsigned long)&gdt; // O endereço base da GDT é o endereço de 'gdt'
 
     load_gdt();
+    println("->GDT Loaded!");
 }

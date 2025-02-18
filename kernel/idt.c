@@ -27,4 +27,5 @@ void set_idt() {
     // Carregar a IDT utilizando a instrução 'lidt'
     asm("cli");
     __asm__ volatile("lidt (%0)" : : "r" (&idt_ptr));
+    println("->IDT Loaded!");
 }
