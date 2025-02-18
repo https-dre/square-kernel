@@ -96,20 +96,67 @@ void new_line()
     vgaWriter.column = 0;
 }
 
-void printi(int number) {
-    char* digitToStr[] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-
-    if (number >= 0 && number <= 9) {
-        print(digitToStr[number]);
+void printi(int num) {
+    if (num == 0) {
+        print("0");
         return;
-    } else {
-        int remaining = number % 10;
-        number = number / 10;
+    }
 
-        printi(number);
-        printi(remaining);
+    if (num < 0) {
+        print("-"); 
+        num = -num;  
+    }
+
+    char buffer[10];  
+    int i = 0;
+
+    while (num > 0) {
+        buffer[i++] = (num % 10) + '0';  
+        num = num / 10;
+    }
+
+    for (int j = i - 1; j >= 0; j--) {
+        print(buffer[j]);
     }
 }
+
+void print_char(char c) {
+    char str[2] = {c, '\0'};  // Cria uma string de 1 caractere
+    print(str);  // Reutiliza a função print
+}
+
+void printf(const char *format, ...) {
+    const char *str = format;
+    int *arg = (int*)&format; // Argumentos que serão passados manualmente
+
+    while (*str != '\0') {
+        if (*str == '%') {
+            str++;  // Avança para o próximo caractere após o '%'
+            switch (*str) {
+                case 'd':  // Inteiro
+                    arg++;  // Move para o próximo argumento
+                    printi(*arg);
+                    break;
+                case 's':  // String
+                    arg++;  // Move para o próximo argumento
+                    print((char *)*arg);
+                    break;
+                case 'c':  // Caractere
+                    arg++;  // Move para o próximo argumento
+                    print_char((char)*arg);
+                    break;
+                default:
+                    print("%");  // Caso não reconheça, apenas imprime '%'
+                    print_char(*str);
+                    break;
+            }
+        } else {
+            print_char(*str);  // Imprime o caractere normal
+        }
+        str++;
+    }
+}
+
 
 void errorPrint(char *str) {
     set_vga_color_code(color_code(Red, Black));
