@@ -96,27 +96,18 @@ void new_line()
     vgaWriter.column = 0;
 }
 
-void printi(int num) {
-    if (num == 0) {
-        print("0");
+void printi(int number) {
+    char* digitToStr[] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+
+    if (number >= 0 && number <= 9) {
+        print(digitToStr[number]);
         return;
-    }
+    } else {
+        int remaining = number % 10;
+        number = number / 10;
 
-    if (num < 0) {
-        print("-"); 
-        num = -num;  
-    }
-
-    char buffer[10];  
-    int i = 0;
-
-    while (num > 0) {
-        buffer[i++] = (num % 10) + '0';  
-        num = num / 10;
-    }
-
-    for (int j = i - 1; j >= 0; j--) {
-        print(buffer[j]);
+        printi(number);
+        printi(remaining);
     }
 }
 
