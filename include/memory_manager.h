@@ -18,3 +18,5 @@ extern uintptr_t  *page_directory;
 #define HEAP_MAGIC 0x12345678
 #define HEAP_MIN_SIZE 0x70000
 #define HEAP_INDEX_SIZE 0x20000
+
+extern int init_mmu();

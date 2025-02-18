@@ -12,7 +12,7 @@ KERNEL_FLAGS = -g -Wno-error=incompatible-pointer-types  -Wno-error=int-conversi
 KERNEL_OBJECT = $(BUILD_DIR)/kernel.elf
 OUTFILE = square-kernel.iso
 LINKER = linker.ld
-LINKER_FILES = $(BUILD_DIR)/multiboot_header.o $(BUILD_DIR)/starter.o $(BUILD_DIR)/gdt.o $(BUILD_DIR)/idt.o $(KERNEL_OBJECT) $(BUILD_DIR)/vga_buffer.elf $(BUILD_DIR)/liballoc.o $(BUILD_DIR)/paging.o  $(BUILD_DIR)/page_allocator.o $(BUILD_DIR)/string.o
+LINKER_FILES = $(BUILD_DIR)/multiboot_header.o $(BUILD_DIR)/starter.o $(BUILD_DIR)/gdt.o $(BUILD_DIR)/idt.o $(KERNEL_OBJECT) $(BUILD_DIR)/vga_buffer.elf $(BUILD_DIR)/liballoc.o $(BUILD_DIR)/paging.o  $(BUILD_DIR)/page_allocator.o $(BUILD_DIR)/string.o $(BUILD_DIR)/MMU.o
 DEBUG_FLAGS = -g
 
 build_: $(INIT_KERNEL_FILES) $(BOOTSTRAP_FILE) $(KERNEL_FILES)
@@ -24,6 +24,7 @@ build_: $(INIT_KERNEL_FILES) $(BOOTSTRAP_FILE) $(KERNEL_FILES)
 	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/vga/vga_buffer.c -o $(BUILD_DIR)/vga_buffer.elf
 	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/mm/paging/paging.c -o $(BUILD_DIR)/paging.o
 	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/mm/liballoc.c -o $(BUILD_DIR)/liballoc.o
+	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/mm/MMU.c -o $(BUILD_DIR)/MMU.o
 	$(CC) $(KERNEL_FLAGS) $(SRC_DIR)/mm/page_allocator.c -o $(BUILD_DIR)/page_allocator.o
 	$(CC) $(KERNEL_FLAGS) lib/string.c -o $(BUILD_DIR)/string.o
 	
