@@ -11,7 +11,7 @@ Um kernel simples e open-source para aprendizado e hobby.
 
 - Video: Vga-Buffer *(implementado)*
 
-- Basic *MM* - Memory Manager *(em progresso)*
+- Basic *MM* - Memory Manager *(implementado)*
 
 - Basic *PM* - Process Manager
 
