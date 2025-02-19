@@ -1,6 +1,6 @@
-#include "vga_buffer.h"
-#include "colors.h"
-#include <memory_manager.h>
+#include <video/vga_buffer.h>
+#include <video/colors.h>
+#include <memory/memory_manager.h>
 #include <gdt.h>
 #include <idt.h>
 
