@@ -24,3 +24,4 @@ int color_code(int, int);
 void println(char *);
 void errorPrint(char *);
 void setDefaultColor();
+void printf(const char *, ...);

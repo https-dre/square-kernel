@@ -1,8 +1,8 @@
-#include "page_allocator.h"
+#include <memory/page_allocator.h>
 #include "stdint.h"
 #include "stddef.h"
-#include "vga_buffer.h"
-#include "memory_manager.h"
+#include <video/vga_buffer.h>
+#include <memory/memory_manager.h>
 
 static uint8_t *bitmap = (uint8_t*)0xffff;
 

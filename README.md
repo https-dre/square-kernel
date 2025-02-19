@@ -7,13 +7,13 @@ Um kernel para processadores x86 simples e open-source, desenvolvido por hobby n
 
 # Implementações
 
-- Protected-Mode *32 bits*  *(implementado)*
+- Long-Mode *64 bits*  *(implementado)*
 
 - Video: Vga-Buffer *(implementado)*
 
-- Basic *MM* - Memory Manager *(em progresso)*
+- Basic *MM* - Memory Manager *(implementado)*
 
-- Basic *PM* - Process Manager
+- Basic *PM* - Process Manager *(em progresso)*
 
 - Advanced *PM*
 

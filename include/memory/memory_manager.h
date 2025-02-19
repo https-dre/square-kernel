@@ -19,7 +19,4 @@ extern uintptr_t  *page_directory;
 #define HEAP_MIN_SIZE 0x70000
 #define HEAP_INDEX_SIZE 0x20000
 
-typedef struct block {
-    size_t size;       // Tamanho do bloco
-    struct block* next; // Ponteiro para o próximo bloco
-} block_t;
+extern int init_mmu();

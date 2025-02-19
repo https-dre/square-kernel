@@ -1,5 +1,5 @@
-#include "vga_buffer.h"
-#include "colors.h"
+#include <video/vga_buffer.h>
+#include <video/colors.h>
 
 #define VGA_COMMAND_PORT 0x3D4
 #define VGA_DATA_PORT    0x3D5
@@ -110,6 +110,44 @@ void printi(int number) {
         printi(remaining);
     }
 }
+
+void print_char(char c) {
+    char str[2] = {c, '\0'};  // Cria uma string de 1 caractere
+    print(str);  // Reutiliza a função print
+}
+
+void printf(const char *format, ...) {
+    const char *str = format;
+    int *arg = (int*)&format; // Argumentos que serão passados manualmente
+
+    while (*str != '\0') {
+        if (*str == '%') {
+            str++;  // Avança para o próximo caractere após o '%'
+            switch (*str) {
+                case 'd':  // Inteiro
+                    arg++;  // Move para o próximo argumento
+                    printi(*arg);
+                    break;
+                case 's':  // String
+                    arg++;  // Move para o próximo argumento
+                    print((char *)*arg);
+                    break;
+                case 'c':  // Caractere
+                    arg++;  // Move para o próximo argumento
+                    print_char((char)*arg);
+                    break;
+                default:
+                    print("%");  // Caso não reconheça, apenas imprime '%'
+                    print_char(*str);
+                    break;
+            }
+        } else {
+            print_char(*str);  // Imprime o caractere normal
+        }
+        str++;
+    }
+}
+
 
 void errorPrint(char *str) {
     set_vga_color_code(color_code(Red, Black));
