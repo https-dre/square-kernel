@@ -13,6 +13,8 @@ void kernel_main() {
     println("64-Bit Mode");
     println("Paging initialized!");
     println("GDT Loaded!");
+    init_mmu();
+
     set_vga_color_code(color_code(Black, LightGreen));
     println("Kernel Ready!");
     

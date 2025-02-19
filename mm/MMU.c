@@ -11,4 +11,5 @@ int init_mmu() {
         return -1;
     }
     heap_init(heap_start);
+    println("Memory Ready!");
 }
