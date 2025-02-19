@@ -7,13 +7,13 @@ Um kernel simples e open-source para aprendizado e hobby.
 
 # Implementações
 
-- Protected-Mode *32 bits*  *(implementado)*
+- Long-Mode *64 bits*  *(implementado)*
 
 - Video: Vga-Buffer *(implementado)*
 
 - Basic *MM* - Memory Manager *(implementado)*
 
-- Basic *PM* - Process Manager
+- Basic *PM* - Process Manager *(em progresso)*
 
 - Advanced *PM*
 
