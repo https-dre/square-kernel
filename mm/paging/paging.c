@@ -1,10 +1,11 @@
-#include "paging.h"
-#include "memory_manager.h"
-#include "vga_buffer.h"
+#include <memory/paging.h>
+#include <memory/memory_manager.h>
+#include <memory/page_allocator.h>
+#include <video/vga_buffer.h>
 #include "stdint.h"
 #include "stddef.h"
 #include "string.h"
-#include "page_allocator.h"
+
 
 uintptr_t *page_directory;
 

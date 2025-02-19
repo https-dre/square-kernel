@@ -1,5 +1,5 @@
-#include "vga_buffer.h"
-#include "colors.h"
+#include <video/vga_buffer.h>
+#include <video/colors.h>
 
 #define VGA_COMMAND_PORT 0x3D4
 #define VGA_DATA_PORT    0x3D5

@@ -1,8 +1,8 @@
-#include <memory_manager.h>
-#include <paging.h>
-#include <liballoc.h>
-#include <page_allocator.h>
-#include <vga_buffer.h>
+#include <memory/memory_manager.h>
+#include <memory/paging.h>
+#include <memory/liballoc.h>
+#include <memory/page_allocator.h>
+#include <video/vga_buffer.h>
 
 int init_mmu() {
     paging_init();

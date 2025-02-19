@@ -1,8 +1,8 @@
-#include <memory_manager.h>
-#include <liballoc.h>
+#include <memory/memory_manager.h>
+#include <memory/liballoc.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <page_allocator.h>
+#include <memory/page_allocator.h>
 
 uintptr_t heap_top = 0;
 uintptr_t lastblock = 0;
