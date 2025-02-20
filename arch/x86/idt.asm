@@ -1,6 +1,6 @@
 ; IRQ (Interruption Request)
 ; refere-se a uma solicitação de interrupção enviada por um dispositivo
-; de hardware para o processador. Isso indica que o dispositivo precisa de atenção
+; de hardqare para o processador. Isso indica que o dispositivo precisa de atenção
 ; imediata do sistema operaional ou do BIOS.
 
 ; ISR (Interrupt Service Routine)
@@ -10,6 +10,7 @@
 ; Cada IRQ está associado a uma ISR específica no sistema operacional. Quando um IRQ é
 ; acionado, o processador invoca imediatamente a ISR correspondente com a IRQ.
 
+extern interrupt_handler
 
 isr_0:
 	cli
@@ -172,31 +173,9 @@ isr_31:
 	jmp isr_basic
 	
 isr_32:
-	; Part 1
-    
-    cli ; Step 1
-    
-    pusha ; Step 2
-    
-    ; Step 3
-    mov eax, [esp + 32]
-    push eax  
-    
-    call scheduler ; Step 4
-    
-    ; ... ;
-    
-    ; Part 2
-    
-    ; Step 5
-    mov al, 0x20
-    out 0x20, al
-    
-    ; Step 6
-    add esp, 40d
-    push run_next_process
-    
-    iret ; Step 7
+	cli
+	push 32
+	jmp isr_basic
 	
 isr_33:
 	cli
@@ -278,87 +257,96 @@ isr_48:
 	push 48
 	jmp irq_basic
 
-terminate_process:
+isr_49:
   cli
   push 49
   jmp isr_basic
 
 isr_basic:
 	call interrupt_handler
-	pop eax
+	pop rax
     
-  sti
+  	sti
 	iret
 
 irq_basic:
     call interrupt_handler
 
+    ; Envia EOI para o PIC mestre
     mov al, 0x20
     out 0x20, al
 
-    cmp byte [esp], 40d
-    jnge  .irq_basic_end
-    
-	; envia o sinal de EOI ao PIC mestre
-    mov al, 0xa0
-    out 0x20, al
+    ; Se a interrupção veio do PIC escravo (IRQ 8+), precisa limpar os dois PICs
+    cmp byte [rsp + 8], 40  ; IRQ >= 40 (decimal) significa que veio do PIC escravo
+    jl .irq_basic_end       ; Se for menor, não precisa limpar o PIC escravo
 
-    .irq_basic_end:
-        pop eax
-        sti
-        iret
+    mov al, 0x20
+    out 0xA0, al            ; Envia EOI para o PIC escravo
 
+.irq_basic_end:
+
+    sti    ; Reativa interrupções
+    iretq  ; Retorna da interrupção (versão 64 bits do IRET)
+
+global load_idt
+
+load_idt:
+	lidt [idtr]
+
+section .data
+align 16
 idt:
-	dw isr_0, 8, 0x8e00, 0x0000
-	dw isr_1, 8, 0x8e00, 0x0000
-	dw isr_2, 8, 0x8e00, 0x0000
-	dw isr_3, 8, 0x8e00, 0x0000
-	dw isr_4, 8, 0x8e00, 0x0000
-	dw isr_5, 8, 0x8e00, 0x0000
-	dw isr_6, 8, 0x8e00, 0x0000
-	dw isr_7, 8, 0x8e00, 0x0000
-	dw isr_8, 8, 0x8e00, 0x0000
-	dw isr_9, 8, 0x8e00, 0x0000
-	dw isr_10, 8, 0x8e00, 0x0000
-	dw isr_11, 8, 0x8e00, 0x0000
-	dw isr_12, 8, 0x8e00, 0x0000
-	dw isr_13, 8, 0x8e00, 0x0000
-	dw isr_14, 8, 0x8e00, 0x0000
-	dw isr_15, 8, 0x8e00, 0x0000
-	dw isr_16, 8, 0x8e00, 0x0000
-	dw isr_17, 8, 0x8e00, 0x0000
-	dw isr_18, 8, 0x8e00, 0x0000
-	dw isr_19, 8, 0x8e00, 0x0000
-	dw isr_20, 8, 0x8e00, 0x0000
-	dw isr_21, 8, 0x8e00, 0x0000
-	dw isr_22, 8, 0x8e00, 0x0000
-	dw isr_23, 8, 0x8e00, 0x0000
-	dw isr_24, 8, 0x8e00, 0x0000
-	dw isr_25, 8, 0x8e00, 0x0000
-	dw isr_26, 8, 0x8e00, 0x0000
-	dw isr_27, 8, 0x8e00, 0x0000
-	dw isr_28, 8, 0x8e00, 0x0000
-	dw isr_29, 8, 0x8e00, 0x0000
-	dw isr_30, 8, 0x8e00, 0x0000
-	dw isr_31, 8, 0x8e00, 0x0000
-	dw isr_32, 8, 0x8e00, 0x0000
-	dw isr_33, 8, 0x8e00, 0x0000
-	dw isr_34, 8, 0x8e00, 0x0000
-	dw isr_35, 8, 0x8e00, 0x0000
-	dw isr_36, 8, 0x8e00, 0x0000
-	dw isr_37, 8, 0x8e00, 0x0000
-	dw isr_38, 8, 0x8e00, 0x0000
-	dw isr_39, 8, 0x8e00, 0x0000
-	dw isr_40, 8, 0x8e00, 0x0000
-	dw isr_41, 8, 0x8e00, 0x0000
-	dw isr_42, 8, 0x8e00, 0x0000
-	dw isr_43, 8, 0x8e00, 0x0000
-	dw isr_44, 8, 0x8e00, 0x0000
-	dw isr_45, 8, 0x8e00, 0x0000
-	dw isr_46, 8, 0x8e00, 0x0000
-	dw isr_47, 8, 0x8e00, 0x0000
-	dw isr_48, 8, 0x8e00, 0x0000
-	dw terminate_process, 8, 0x8e00, 0x0000
+    dq isr_0, 0x0008000000008E00
+    dq isr_1, 0x0008000000008E00
+    dq isr_2, 0x0008000000008E00
+    dq isr_3, 0x0008000000008E00
+    dq isr_4, 0x0008000000008E00
+    dq isr_5, 0x0008000000008E00
+    dq isr_6, 0x0008000000008E00
+    dq isr_7, 0x0008000000008E00
+    dq isr_8, 0x0008000000008E00
+    dq isr_9, 0x0008000000008E00
+    dq isr_10, 0x0008000000008E00
+    dq isr_11, 0x0008000000008E00
+    dq isr_12, 0x0008000000008E00
+    dq isr_13, 0x0008000000008E00
+    dq isr_14, 0x0008000000008E00
+    dq isr_15, 0x0008000000008E00
+    dq isr_16, 0x0008000000008E00
+    dq isr_17, 0x0008000000008E00
+    dq isr_18, 0x0008000000008E00
+    dq isr_19, 0x0008000000008E00
+    dq isr_20, 0x0008000000008E00
+    dq isr_21, 0x0008000000008E00
+    dq isr_22, 0x0008000000008E00
+    dq isr_23, 0x0008000000008E00
+    dq isr_24, 0x0008000000008E00
+    dq isr_25, 0x0008000000008E00
+    dq isr_26, 0x0008000000008E00
+    dq isr_27, 0x0008000000008E00
+    dq isr_28, 0x0008000000008E00
+    dq isr_29, 0x0008000000008E00
+    dq isr_30, 0x0008000000008E00
+    dq isr_31, 0x0008000000008E00
+    dq isr_32, 0x0008000000008E00
+    dq isr_33, 0x0008000000008E00
+    dq isr_34, 0x0008000000008E00
+    dq isr_35, 0x0008000000008E00
+    dq isr_36, 0x0008000000008E00
+    dq isr_37, 0x0008000000008E00
+    dq isr_38, 0x0008000000008E00
+    dq isr_39, 0x0008000000008E00
+    dq isr_40, 0x0008000000008E00
+    dq isr_41, 0x0008000000008E00
+    dq isr_42, 0x0008000000008E00
+    dq isr_43, 0x0008000000008E00
+    dq isr_44, 0x0008000000008E00
+    dq isr_45, 0x0008000000008E00
+    dq isr_46, 0x0008000000008E00
+    dq isr_47, 0x0008000000008E00
+    dq isr_48, 0x0008000000008E00
+    dq isr_49, 0x0008000000008E00
+
 idtr:
-	idt_size_in_bytes	: 	dw idtr - idt
-	idt_base_address	: 	dd idt
+    dw (idtr - idt) - 1
+    dq idt

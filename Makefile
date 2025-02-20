@@ -13,7 +13,7 @@ KERNEL_OBJECT = $(BUILD_DIR)/kernel.elf
 OUTFILE = square-kernel.iso
 LINKER = linker.ld
 
-LINKER_FILES_64 = $(BUILD_DIR)/idt.o \
+LINKER_FILES_64 = $(BUILD_DIR)/idt.o $(BUILD_DIR)/interrupts.o \
  $(KERNEL_OBJECT) $(BUILD_DIR)/vga_buffer.elf $(BUILD_DIR)/liballoc.o \
  $(BUILD_DIR)/page_allocator.o $(BUILD_DIR)/string.o $(BUILD_DIR)/MMU.o
  
@@ -27,11 +27,11 @@ ALL_LINKER_FILES = $(LINKER_FILES_32) $(LINKER_FILES_64)
 build64: $(INIT_KERNEL_FILES) $(BOOTSTRAP_FILE) $(KERNEL_FILES)
 	$(ASM) -f elf64 -g $(INIT_KERNEL_FILES) -o $(BUILD_DIR)/starter.o
 	$(ASM) -f elf64 -g $(MULTIBOOT_FILE) -o $(BUILD_DIR)/multiboot_header.o
-	#$(ASM) -f elf64 -g $(ASM_DIR)/gdt.asm -o $(BUILD_DIR)/gdt.o
+	$(ASM) -f elf64 -g $(ASM_DIR)/idt.asm -o $(BUILD_DIR)/idt.o
 
 	$(CC) $(KERNEL_FLAGS_64) $(SRC_DIR)/kernel/thread.c -o $(BUILD_DIR)/thread.o
 	$(CC) $(KERNEL_FLAGS_64) $(KERNEL_FILES) -o $(KERNEL_OBJECT)
-	$(CC) $(KERNEL_FLAGS_64) $(SRC_DIR)/kernel/idt.c -o $(BUILD_DIR)/idt.o
+	$(CC) $(KERNEL_FLAGS_64) $(SRC_DIR)/kernel/interrupts.c -o $(BUILD_DIR)/interrupts.o
 	$(CC) $(KERNEL_FLAGS_64) $(SRC_DIR)/vga/vga_buffer.c -o $(BUILD_DIR)/vga_buffer.elf
 	$(CC) $(KERNEL_FLAGS_64) $(SRC_DIR)/mm/liballoc.c -o $(BUILD_DIR)/liballoc.o
 	$(CC) $(KERNEL_FLAGS_64) $(SRC_DIR)/mm/MMU.c -o $(BUILD_DIR)/MMU.o
