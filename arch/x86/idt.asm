@@ -175,7 +175,7 @@ isr_31:
 isr_32:
 	cli
 	push 32
-	jmp isr_basic
+	jmp irq_basic
 	
 isr_33:
 	cli
@@ -292,6 +292,7 @@ global load_idt
 
 load_idt:
 	lidt [idtr]
+	ret
 
 section .data
 align 16

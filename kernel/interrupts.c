@@ -2,4 +2,4 @@
 
 void interrupt_handler(int interrupt) {
     printf(". %d ", interrupt);
-}__attribute__((interrupt));
+}

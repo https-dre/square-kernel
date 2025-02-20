@@ -15,6 +15,7 @@ void kernel_main() {
     println("Paging initialized!");
     println("GDT Loaded!");
     load_idt();
+    println("IDT Loaded!");
     init_mmu();
 
     set_vga_color_code(color_code(Black, LightGreen));
